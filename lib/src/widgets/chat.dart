@@ -184,17 +184,19 @@ class _ChatState extends State<Chat> {
 
   Widget _buildEmptyState() {
     return widget.emptyState ??
-        Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 24,
-          ),
-          child: Text(
-            widget.l10n.emptyChatPlaceholder,
-            style: widget.theme.emptyChatPlaceholderTextStyle,
-            textAlign: TextAlign.center,
-          ),
-        );
+      Container(
+        color: Colors.transparent,
+        height: MediaQuery.of(context).size.height,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        child: Text(
+          widget.l10n.emptyChatPlaceholder,
+          style: widget.theme.emptyChatPlaceholderTextStyle,
+          textAlign: TextAlign.center,
+        ),
+      );
   }
 
   Widget _buildImageGallery() {
@@ -341,23 +343,21 @@ class _ChatState extends State<Chat> {
                   child: Column(
                     children: [
                       Flexible(
-                        child: widget.messages.isEmpty
-                            ? SizedBox.expand(
-                                child: _buildEmptyState(),
-                              )
-                            : GestureDetector(
-                                onTap: () => FocusManager.instance.primaryFocus
-                                    ?.unfocus(),
-                                child: ChatList(
-                                  isLastPage: widget.isLastPage,
-                                  itemBuilder: (item, index) =>
-                                      _buildMessage(item),
-                                  items: _chatMessages,
-                                  onEndReached: widget.onEndReached,
-                                  onEndReachedThreshold:
-                                      widget.onEndReachedThreshold,
-                                ),
-                              ),
+                        child: GestureDetector(
+                          onTap: () => FocusManager.instance.primaryFocus
+                              ?.unfocus(),
+                          child: widget.messages.isEmpty
+                            ? _buildEmptyState()
+                            : ChatList(
+                                isLastPage: widget.isLastPage,
+                                itemBuilder: (item, index) =>
+                                    _buildMessage(item),
+                                items: _chatMessages,
+                                onEndReached: widget.onEndReached,
+                                onEndReachedThreshold:
+                                    widget.onEndReachedThreshold,
+                            ),
+                        ),
                       ),
                       Input(
                         isAttachmentUploading: widget.isAttachmentUploading,
