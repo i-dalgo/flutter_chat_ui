@@ -191,6 +191,7 @@ class _ChatState extends State<Chat> {
   Widget _emptyStateBuilder() {
     return widget.emptyState ??
         Container(
+          color: Colors.transparent,
           alignment: Alignment.center,
           margin: const EdgeInsets.symmetric(
             horizontal: 24,
@@ -345,27 +346,27 @@ class _ChatState extends State<Chat> {
                 child: Column(
                   children: [
                     Flexible(
-                      child: widget.messages.isEmpty
+                      child: GestureDetector(
+                        onTap: () => FocusManager.instance.primaryFocus
+                            ?.unfocus(),
+                        child: widget.messages.isEmpty
                           ? SizedBox.expand(
                               child: _emptyStateBuilder(),
                             )
-                          : GestureDetector(
-                              onTap: () =>
-                                  FocusManager.instance.primaryFocus?.unfocus(),
-                              child: LayoutBuilder(
-                                builder: (BuildContext context,
-                                        BoxConstraints constraints) =>
-                                    ChatList(
-                                  isLastPage: widget.isLastPage,
-                                  itemBuilder: (item, index) =>
-                                      _messageBuilder(item, constraints),
-                                  items: _chatMessages,
-                                  onEndReached: widget.onEndReached,
-                                  onEndReachedThreshold:
-                                      widget.onEndReachedThreshold,
-                                ),
+                          : LayoutBuilder(
+                              builder: (BuildContext context,
+                                      BoxConstraints constraints) =>
+                                  ChatList(
+                                isLastPage: widget.isLastPage,
+                                itemBuilder: (item, index) =>
+                                    _messageBuilder(item, constraints),
+                                items: _chatMessages,
+                                onEndReached: widget.onEndReached,
+                                onEndReachedThreshold:
+                                    widget.onEndReachedThreshold,
                               ),
                             ),
+                      ),
                     ),
                     Input(
                       isAttachmentUploading: widget.isAttachmentUploading,
