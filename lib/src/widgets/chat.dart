@@ -24,6 +24,7 @@ class Chat extends StatefulWidget {
   /// Creates a chat widget
   const Chat({
     Key? key,
+    this.customBottomWidget,
     this.customDateHeaderText,
     this.customMessageBuilder,
     this.dateFormat,
@@ -50,6 +51,10 @@ class Chat extends StatefulWidget {
     this.usePreviewData = true,
     required this.user,
   }) : super(key: key);
+
+  /// Allows you to replace the default Input widget e.g. if you want to create
+  /// a channel view.
+  final Widget? customBottomWidget;
 
   /// If [dateFormat], [dateLocale] and/or [timeFormat] is not enough to
   /// customize date headers in your case, use this to return an arbitrary
@@ -91,7 +96,7 @@ class Chat extends StatefulWidget {
 
   /// Localized copy. Extend [ChatL10n] class to create your own copy or use
   /// existing one, like the default [ChatL10nEn]. You can customize only
-  /// certain variables, see more here [ChatL10nEn].
+  /// certain properties, see more here [ChatL10nEn].
   final ChatL10n l10n;
 
   /// List of [types.Message] to render in the chat widget
@@ -134,7 +139,7 @@ class Chat extends StatefulWidget {
 
   /// Chat theme. Extend [ChatTheme] class to create your own theme or use
   /// existing one, like the [DefaultChatTheme]. You can customize only certain
-  /// variables, see more here [DefaultChatTheme].
+  /// properties, see more here [DefaultChatTheme].
   final ChatTheme theme;
 
   /// Allows you to customize the time format. IMPORTANT: only for the time,
@@ -368,13 +373,15 @@ class _ChatState extends State<Chat> {
                             ),
                       ),
                     ),
-                    Input(
-                      isAttachmentUploading: widget.isAttachmentUploading,
-                      onAttachmentPressed: widget.onAttachmentPressed,
-                      onSendPressed: widget.onSendPressed,
-                      onTextChanged: widget.onTextChanged,
-                      sendButtonVisibilityMode: widget.sendButtonVisibilityMode,
-                    ),
+                    widget.customBottomWidget ??
+                        Input(
+                          isAttachmentUploading: widget.isAttachmentUploading,
+                          onAttachmentPressed: widget.onAttachmentPressed,
+                          onSendPressed: widget.onSendPressed,
+                          onTextChanged: widget.onTextChanged,
+                          sendButtonVisibilityMode:
+                              widget.sendButtonVisibilityMode,
+                        ),
                   ],
                 ),
               ),
