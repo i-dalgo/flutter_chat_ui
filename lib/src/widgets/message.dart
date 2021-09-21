@@ -14,7 +14,10 @@ class Message extends StatelessWidget {
   /// Creates a particular message from any message type
   const Message({
     Key? key,
+    this.bubbleBuilder,
     this.customMessageBuilder,
+    this.fileMessageBuilder,
+    this.imageMessageBuilder,
     required this.message,
     required this.messageWidth,
     this.onMessageLongPress,
@@ -25,11 +28,32 @@ class Message extends StatelessWidget {
     required this.showName,
     required this.showStatus,
     required this.showUserAvatars,
+    this.textMessageBuilder,
     required this.usePreviewData,
   }) : super(key: key);
 
+  /// Customize the default bubble using this function. `child` is a content
+  /// you should render inside your bubble, `message` is a current message
+  /// (contains `author` inside) and `nextMessageInGroup` allows you to see
+  /// if the message is a part of a group (messages are grouped when written
+  /// in quick succession by the same author)
+  final Widget Function(
+    Widget child, {
+    required types.Message message,
+    required bool nextMessageInGroup,
+  })? bubbleBuilder;
+
   /// Build a custom message inside predefined bubble
-  final Widget Function(types.CustomMessage)? customMessageBuilder;
+  final Widget Function(types.CustomMessage, {required int messageWidth})?
+      customMessageBuilder;
+
+  /// Build a file message inside predefined bubble
+  final Widget Function(types.FileMessage, {required int messageWidth})?
+      fileMessageBuilder;
+
+  /// Build an image message inside predefined bubble
+  final Widget Function(types.ImageMessage, {required int messageWidth})?
+      imageMessageBuilder;
 
   /// Any message type
   final types.Message message;
@@ -62,6 +86,13 @@ class Message extends StatelessWidget {
   /// Show user avatars for received messages. Useful for a group chat.
   final bool showUserAvatars;
 
+  /// Build a text message inside predefined bubble.
+  final Widget Function(
+    types.TextMessage, {
+    required int messageWidth,
+    required bool showName,
+  })? textMessageBuilder;
+
   /// See [TextMessage.usePreviewData]
   final bool usePreviewData;
 
@@ -71,23 +102,23 @@ class Message extends StatelessWidget {
       InheritedChatTheme.of(context).theme.userAvatarNameColors,
     );
     final hasImage = message.author.imageUrl != null;
-    final name = getUserName(message.author);
+    final initials = getUserInitials(message.author);
 
     return showAvatar
         ? Container(
             margin: const EdgeInsets.only(right: 8),
             child: CircleAvatar(
-              backgroundImage:
-                  hasImage ? NetworkImage(message.author.imageUrl!) : null,
               backgroundColor: hasImage
                   ? InheritedChatTheme.of(context)
                       .theme
                       .userAvatarImageBackgroundColor
                   : color,
+              backgroundImage:
+                  hasImage ? NetworkImage(message.author.imageUrl!) : null,
               radius: 16,
               child: !hasImage
                   ? Text(
-                      name.isEmpty ? '' : name[0].toUpperCase(),
+                      initials,
                       style: InheritedChatTheme.of(context)
                           .theme
                           .userAvatarTextStyle,
@@ -98,32 +129,63 @@ class Message extends StatelessWidget {
         : const SizedBox(width: 40);
   }
 
+  Widget _bubbleBuilder(
+    BuildContext context,
+    BorderRadius borderRadius,
+    bool currentUserIsAuthor,
+  ) {
+    return bubbleBuilder != null
+        ? bubbleBuilder!(
+            _messageBuilder(),
+            message: message,
+            nextMessageInGroup: roundBorder,
+          )
+        : Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              color: !currentUserIsAuthor ||
+                      message.type == types.MessageType.image
+                  ? InheritedChatTheme.of(context).theme.secondaryColor
+                  : InheritedChatTheme.of(context).theme.primaryColor,
+            ),
+            child: ClipRRect(
+              borderRadius: borderRadius,
+              child: _messageBuilder(),
+            ),
+          );
+  }
+
   Widget _messageBuilder() {
     switch (message.type) {
       case types.MessageType.custom:
         final customMessage = message as types.CustomMessage;
         return customMessageBuilder != null
-            ? customMessageBuilder!(customMessage)
+            ? customMessageBuilder!(customMessage, messageWidth: messageWidth)
             : const SizedBox();
       case types.MessageType.file:
         final fileMessage = message as types.FileMessage;
-        return FileMessage(
-          message: fileMessage,
-        );
+        return fileMessageBuilder != null
+            ? fileMessageBuilder!(fileMessage, messageWidth: messageWidth)
+            : FileMessage(message: fileMessage);
       case types.MessageType.image:
         final imageMessage = message as types.ImageMessage;
-        return ImageMessage(
-          message: imageMessage,
-          messageWidth: messageWidth,
-        );
+        return imageMessageBuilder != null
+            ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
+            : ImageMessage(message: imageMessage, messageWidth: messageWidth);
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
-        return TextMessage(
-          message: textMessage,
-          onPreviewDataFetched: onPreviewDataFetched,
-          showName: showName,
-          usePreviewData: usePreviewData,
-        );
+        return textMessageBuilder != null
+            ? textMessageBuilder!(
+                textMessage,
+                messageWidth: messageWidth,
+                showName: showName,
+              )
+            : TextMessage(
+                message: textMessage,
+                onPreviewDataFetched: onPreviewDataFetched,
+                showName: showName,
+                usePreviewData: usePreviewData,
+              );
       default:
         return const SizedBox();
     }
@@ -218,18 +280,10 @@ class Message extends StatelessWidget {
                 GestureDetector(
                   onLongPress: () => onMessageLongPress?.call(message),
                   onTap: () => onMessageTap?.call(message),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: _borderRadius,
-                      color: !_currentUserIsAuthor ||
-                              message.type == types.MessageType.image
-                          ? InheritedChatTheme.of(context).theme.secondaryColor
-                          : InheritedChatTheme.of(context).theme.primaryColor,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: _borderRadius,
-                      child: _messageBuilder(),
-                    ),
+                  child: _bubbleBuilder(
+                    context,
+                    _borderRadius,
+                    _currentUserIsAuthor,
                   ),
                 ),
               ],

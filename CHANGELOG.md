@@ -1,3 +1,29 @@
+## 1.4.3
+
+- Add `bubbleBuilder` to allow the chat bubble customization. See [documentation](https://docs.flyer.chat/flutter/chat-ui/advanced-usage#custom-chat-bubbles).
+
+## 1.4.2
+
+- Add `fileMessageBuilder`, `imageMessageBuilder` and `textMessageBuilder` for more customization options. Thanks @Androrier for the PR!
+- Fix avatar initials (show first letters of first and last names, instead of one, where applicable)
+
+## 1.4.1
+
+- Fix release on `pub.dev`
+
+## 1.4.0
+
+- Update to Flutter 2.5
+
+## 1.3.4
+
+- Update dependencies
+
+## 1.3.3
+
+- Add `onTextFieldTap`. Thanks @halildurmus for the PR!
+- Add `messageInsetsHorizontal` and `messageInsetsVertical` to the theme to customize message bubble's paddings
+
 ## 1.3.2
 
 - Fix memory leak. Thanks @m-j-g for reporting!

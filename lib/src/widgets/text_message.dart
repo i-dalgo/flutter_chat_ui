@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_link_previewer/flutter_link_previewer.dart'
-    show LinkPreview, REGEX_LINK;
+    show LinkPreview, regexLink;
 import '../util.dart';
 import 'inherited_chat_theme.dart';
 import 'inherited_user.dart';
@@ -72,9 +72,10 @@ class TextMessage extends StatelessWidget {
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
       onPreviewDataFetched: _onPreviewDataFetched,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 16,
+      padding: EdgeInsets.symmetric(
+        horizontal:
+            InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
+        vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
       ),
       previewData: message.previewData,
       text: message.text,
@@ -93,7 +94,7 @@ class TextMessage extends StatelessWidget {
       children: [
         if (showName)
           Padding(
-            padding: const EdgeInsets.only(bottom: 6.0),
+            padding: const EdgeInsets.only(bottom: 6),
             child: Text(
               name,
               maxLines: 1,
@@ -123,7 +124,7 @@ class TextMessage extends StatelessWidget {
     final _width = MediaQuery.of(context).size.width;
 
     if (usePreviewData && onPreviewDataFetched != null) {
-      final urlRegexp = RegExp(REGEX_LINK, caseSensitive: false);
+      final urlRegexp = RegExp(regexLink, caseSensitive: false);
       final matches = urlRegexp.allMatches(message.text);
 
       if (matches.isNotEmpty) {
@@ -132,9 +133,10 @@ class TextMessage extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 16,
+      margin: EdgeInsets.symmetric(
+        horizontal:
+            InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
+        vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
       ),
       child: _textWidgetBuilder(_user, context),
     );
