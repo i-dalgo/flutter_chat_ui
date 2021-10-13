@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:scorecast/resources/values/app_colors.dart';
 import '../models/send_button_visibility_mode.dart';
 import 'attachment_button.dart';
 import 'inherited_chat_theme.dart';
@@ -118,6 +119,7 @@ class _InputState extends State<Input> {
 
   @override
   Widget build(BuildContext context) {
+    print('InheritedChatTheme.of(context).theme.inputBorderRadius ${InheritedChatTheme.of(context).theme.inputBorderRadius}');
     final _query = MediaQuery.of(context);
 
     return GestureDetector(
@@ -163,56 +165,65 @@ class _InputState extends State<Input> {
                     24 + _query.padding.right,
                     20 + _query.viewInsets.bottom + _query.padding.bottom,
                   ),
-                  child: Row(
-                    children: [
-                      if (widget.onAttachmentPressed != null) _leftWidget(),
-                      Expanded(
-                        child: TextField(
-                          controller: _textController,
-                          cursorColor: InheritedChatTheme.of(context)
-                              .theme
-                              .inputTextCursorColor,
-                          decoration: InheritedChatTheme.of(context)
-                              .theme
-                              .inputTextDecoration
-                              .copyWith(
-                                hintStyle: InheritedChatTheme.of(context)
-                                    .theme
-                                    .inputTextStyle
-                                    .copyWith(
-                                      color: InheritedChatTheme.of(context)
-                                          .theme
-                                          .inputTextColor
-                                          .withOpacity(0.5),
-                                    ),
-                                hintText: InheritedL10n.of(context)
-                                    .l10n
-                                    .inputPlaceholder,
-                              ),
-                          focusNode: _inputFocusNode,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 5,
-                          minLines: 1,
-                          onChanged: widget.onTextChanged,
-                          onTap: widget.onTextFieldTap,
-                          style: InheritedChatTheme.of(context)
-                              .theme
-                              .inputTextStyle
-                              .copyWith(
-                                color: InheritedChatTheme.of(context)
-                                    .theme
-                                    .inputTextColor,
-                              ),
-                          textCapitalization: TextCapitalization.sentences,
+                  child: Container(
+                    decoration: true ? BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: InheritedChatTheme.of(context).theme.inputBorderRadius,
+                    ) : null,
+                    child: Row(
+                      children: [
+                        if (widget.onAttachmentPressed != null) _leftWidget(),
+                        Expanded(
+                          child: TextField(
+                            controller: _textController,
+                            cursorColor: InheritedChatTheme.of(context)
+                                .theme
+                                .inputTextCursorColor,
+                            decoration: InheritedChatTheme.of(context)
+                                .theme
+                                .inputTextDecoration
+                                .copyWith(
+                                  hintStyle: InheritedChatTheme.of(context)
+                                      .theme
+                                      .inputTextStyle
+                                      .copyWith(
+                                        color: InheritedChatTheme.of(context)
+                                            .theme
+                                            .inputTextColor
+                                            .withOpacity(0.5),
+                                      ),
+                                  hintText: InheritedL10n.of(context)
+                                      .l10n
+                                      .inputPlaceholder,
+                                ),
+                            focusNode: _inputFocusNode,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 5,
+                            minLines: 1,
+                            onChanged: widget.onTextChanged,
+                            onTap: widget.onTextFieldTap,
+                            style: InheritedChatTheme.of(context)
+                                .theme
+                                .inputTextStyle
+                                .copyWith(
+                                  color: InheritedChatTheme.of(context)
+                                      .theme
+                                      .inputTextColor,
+                                ),
+                            textCapitalization: TextCapitalization.sentences,
+                          ),
                         ),
-                      ),
-                      Visibility(
-                        visible: _sendButtonVisible,
-                        child: SendButton(
-                          onPressed: _handleSendPressed,
+                        Container(
+                          margin: true ? EdgeInsets.only(right: 6) : null,
+                          child: Visibility(
+                            visible: _sendButtonVisible,
+                            child: SendButton(
+                              onPressed: _handleSendPressed,
+                            ),
+                          )
                         ),
-                      ),
-                    ],
+                      ],
+                    )
                   ),
                 ),
               ),
