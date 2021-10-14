@@ -11,6 +11,7 @@ class TextMessage extends StatelessWidget {
   /// Creates a text message widget from a [types.TextMessage] class
   const TextMessage({
     Key? key,
+    this.customHeaderTag,
     required this.message,
     this.onPreviewDataFetched,
     required this.usePreviewData,
@@ -29,6 +30,9 @@ class TextMessage extends StatelessWidget {
 
   /// Enables link (URL) preview
   final bool usePreviewData;
+
+  /// Allows you to add a Tag next to author's name.
+  final Widget Function(BuildContext context)? customHeaderTag;
 
   void _onPreviewDataFetched(types.PreviewData previewData) {
     if (message.previewData == null) {
@@ -92,19 +96,31 @@ class TextMessage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showName)
+        if (showName) ...[
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: Text(
-              name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: InheritedChatTheme.of(context)
-                  .theme
-                  .userNameTextStyle
-                  .copyWith(color: color),
-            ),
-          ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: InheritedChatTheme.of(context)
+                        .theme
+                        .userNameTextStyle
+                        .copyWith(color: color),
+                  )
+                ),
+                if (message.author.role == types.Role.admin && customHeaderTag != null)
+                  customHeaderTag!(context)
+              ]
+            )
+          )
+        ],
         SelectableText(
           message.text,
           style: user.id == message.author.id

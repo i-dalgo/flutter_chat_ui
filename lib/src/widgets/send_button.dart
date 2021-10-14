@@ -16,9 +16,9 @@ class SendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 28,
+      height: InheritedChatTheme.of(context).theme.sendButtonIconSize ?? 28,
       margin: const EdgeInsets.only(left: 16),
-      width: 28,
+      width: InheritedChatTheme.of(context).theme.sendButtonIconSize ?? 28,
       child: IconButton(
         icon: InheritedChatTheme.of(context).theme.sendButtonIcon != null
             ? InheritedChatTheme.of(context).theme.sendButtonIcon!

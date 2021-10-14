@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:scorecast/resources/values/app_colors.dart';
 import '../models/send_button_visibility_mode.dart';
 import 'attachment_button.dart';
 import 'inherited_chat_theme.dart';
@@ -28,6 +27,7 @@ class Input extends StatefulWidget {
     this.onTextChanged,
     this.onTextFieldTap,
     required this.sendButtonVisibilityMode,
+    required this.sendButtonIsInsideInputBackround,
   }) : super(key: key);
 
   /// See [AttachmentButton.onPressed]
@@ -53,6 +53,9 @@ class Input extends StatefulWidget {
   /// [TextField] state inside the [Input] widget.
   /// Defaults to [SendButtonVisibilityMode.editing].
   final SendButtonVisibilityMode sendButtonVisibilityMode;
+
+  /// Place SendButton inside Input Background
+  final bool sendButtonIsInsideInputBackround;
 
   @override
   _InputState createState() => _InputState();
@@ -119,7 +122,6 @@ class _InputState extends State<Input> {
 
   @override
   Widget build(BuildContext context) {
-    print('InheritedChatTheme.of(context).theme.inputBorderRadius ${InheritedChatTheme.of(context).theme.inputBorderRadius}');
     final _query = MediaQuery.of(context);
 
     return GestureDetector(
@@ -160,17 +162,18 @@ class _InputState extends State<Input> {
                     InheritedChatTheme.of(context).theme.inputBackgroundColor,
                 child: Container(
                   padding: EdgeInsets.fromLTRB(
-                    24 + _query.padding.left,
-                    20,
-                    24 + _query.padding.right,
-                    20 + _query.viewInsets.bottom + _query.padding.bottom,
+                    InheritedChatTheme.of(context).theme.inputInsetsHorizontal + _query.padding.left,
+                    InheritedChatTheme.of(context).theme.inputInsetsVertical,
+                    InheritedChatTheme.of(context).theme.inputInsetsHorizontal + _query.padding.right,
+                    InheritedChatTheme.of(context).theme.inputInsetsVertical + _query.viewInsets.bottom + _query.padding.bottom,
                   ),
                   child: Container(
-                    decoration: true ? BoxDecoration(
-                      color: Colors.red,
+                    decoration: widget.sendButtonIsInsideInputBackround ? BoxDecoration(
+                      color: InheritedChatTheme.of(context).theme.inputTextDecoration.fillColor,
                       borderRadius: InheritedChatTheme.of(context).theme.inputBorderRadius,
                     ) : null,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         if (widget.onAttachmentPressed != null) _leftWidget(),
                         Expanded(
@@ -214,7 +217,7 @@ class _InputState extends State<Input> {
                           ),
                         ),
                         Container(
-                          margin: true ? EdgeInsets.only(right: 6) : null,
+                          margin: widget.sendButtonIsInsideInputBackround ? EdgeInsets.only(right: 6, bottom: 6) : null,
                           child: Visibility(
                             visible: _sendButtonVisible,
                             child: SendButton(
