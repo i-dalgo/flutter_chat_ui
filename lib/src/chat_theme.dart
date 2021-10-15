@@ -60,6 +60,8 @@ abstract class ChatTheme {
     required this.inputBackgroundColor,
     required this.inputBorderRadius,
     required this.inputPadding,
+    required this.inputInsetsHorizontal,
+    required this.inputInsetsVertical,
     required this.inputTextColor,
     this.inputTextCursorColor,
     required this.inputTextDecoration,
@@ -76,6 +78,7 @@ abstract class ChatTheme {
     required this.secondaryColor,
     required this.seenIcon,
     required this.sendButtonIcon,
+    this.sendButtonIconSize,
     required this.sendingIcon,
     required this.sentMessageBodyTextStyle,
     required this.sentMessageCaptionTextStyle,
@@ -120,6 +123,12 @@ abstract class ChatTheme {
 
   /// Insets of the bottom bar where text field is
   final EdgeInsetsGeometry inputPadding;
+
+  /// Horizontal input insets
+  final double inputInsetsHorizontal;
+
+  /// Horizontal input insets
+  final double inputInsetsVertical;
 
   /// Color of the text field's text and attachment/send buttons
   final Color inputTextColor;
@@ -172,6 +181,9 @@ abstract class ChatTheme {
 
   /// Icon for send button
   final Widget? sendButtonIcon;
+
+  /// Size of send button
+  final double? sendButtonIconSize;
 
   /// Icon for message's `sending` status. For the best look use size of 10.
   final Widget? sendingIcon;
@@ -243,6 +255,8 @@ class DefaultChatTheme extends ChatTheme {
       top: Radius.circular(20),
     ),
     EdgeInsetsGeometry inputPadding = EdgeInsets.zero,
+    double inputInsetsHorizontal = 24,
+    double inputInsetsVertical = 20,
     Color inputTextColor = neutral7,
     Color? inputTextCursorColor,
     InputDecoration inputTextDecoration = const InputDecoration(
@@ -292,6 +306,7 @@ class DefaultChatTheme extends ChatTheme {
     Color secondaryColor = secondary,
     Widget? seenIcon,
     Widget? sendButtonIcon,
+    double? sendButtonIconSize,
     Widget? sendingIcon,
     TextStyle sentMessageBodyTextStyle = const TextStyle(
       color: neutral7,
@@ -349,6 +364,8 @@ class DefaultChatTheme extends ChatTheme {
           inputBackgroundColor: inputBackgroundColor,
           inputBorderRadius: inputBorderRadius,
           inputPadding: inputPadding,
+          inputInsetsHorizontal: inputInsetsHorizontal,
+          inputInsetsVertical: inputInsetsVertical,
           inputTextColor: inputTextColor,
           inputTextCursorColor: inputTextCursorColor,
           inputTextDecoration: inputTextDecoration,
@@ -366,6 +383,7 @@ class DefaultChatTheme extends ChatTheme {
           secondaryColor: secondaryColor,
           seenIcon: seenIcon,
           sendButtonIcon: sendButtonIcon,
+          sendButtonIconSize: sendButtonIconSize,
           sendingIcon: sendingIcon,
           sentMessageBodyTextStyle: sentMessageBodyTextStyle,
           sentMessageCaptionTextStyle: sentMessageCaptionTextStyle,
@@ -412,6 +430,8 @@ class DarkChatTheme extends ChatTheme {
       top: Radius.circular(20),
     ),
     EdgeInsetsGeometry inputPadding = EdgeInsets.zero,
+    double inputInsetsHorizontal = 24,
+    double inputInsetsVertical = 20,
     Color inputTextColor = neutral7,
     Color? inputTextCursorColor,
     InputDecoration inputTextDecoration = const InputDecoration(
@@ -461,6 +481,7 @@ class DarkChatTheme extends ChatTheme {
     Color secondaryColor = secondaryDark,
     Widget? seenIcon,
     Widget? sendButtonIcon,
+    double? sendButtonIconSize,
     Widget? sendingIcon,
     TextStyle sentMessageBodyTextStyle = const TextStyle(
       color: neutral7,
@@ -520,6 +541,8 @@ class DarkChatTheme extends ChatTheme {
           messageInsetsHorizontal: messageInsetsHorizontal,
           messageInsetsVertical: messageInsetsVertical,
           inputPadding: inputPadding,
+          inputInsetsHorizontal: inputInsetsHorizontal,
+          inputInsetsVertical: inputInsetsVertical,
           inputTextColor: inputTextColor,
           inputTextCursorColor: inputTextCursorColor,
           inputTextDecoration: inputTextDecoration,
@@ -535,6 +558,7 @@ class DarkChatTheme extends ChatTheme {
           secondaryColor: secondaryColor,
           seenIcon: seenIcon,
           sendButtonIcon: sendButtonIcon,
+          sendButtonIconSize: sendButtonIconSize,
           sendingIcon: sendingIcon,
           sentMessageBodyTextStyle: sentMessageBodyTextStyle,
           sentMessageCaptionTextStyle: sentMessageCaptionTextStyle,

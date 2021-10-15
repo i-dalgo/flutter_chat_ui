@@ -28,6 +28,7 @@ class Chat extends StatefulWidget {
     this.customBottomWidget,
     this.customDateHeaderText,
     this.customMessageBuilder,
+    this.customHeaderTag,
     this.dateFormat,
     this.dateHeaderThreshold = 900000,
     this.dateLocale,
@@ -49,6 +50,7 @@ class Chat extends StatefulWidget {
     required this.onSendPressed,
     this.onTextChanged,
     this.onTextFieldTap,
+    this.sendButtonIsInsideInputBackround = false,
     this.sendButtonVisibilityMode = SendButtonVisibilityMode.editing,
     this.showUserAvatars = false,
     this.showUserNames = false,
@@ -82,6 +84,9 @@ class Chat extends StatefulWidget {
   /// See [Message.customMessageBuilder]
   final Widget Function(types.CustomMessage, {required int messageWidth})?
       customMessageBuilder;
+
+  /// See [TextMessage.customHeaderTag]
+  final Widget Function(BuildContext context)? customHeaderTag;
 
   /// Allows you to customize the date format. IMPORTANT: only for the date,
   /// do not return time here. See [timeFormat] to customize the time format.
@@ -166,6 +171,9 @@ class Chat extends StatefulWidget {
 
   /// See [Input.sendButtonVisibilityMode]
   final SendButtonVisibilityMode sendButtonVisibilityMode;
+
+  /// See [Input.sendButtonIsInsideInputBackround]
+  final bool sendButtonIsInsideInputBackround;
 
   /// See [Message.showUserAvatars]
   final bool showUserAvatars;
@@ -333,6 +341,7 @@ class _ChatState extends State<Chat> {
         key: ValueKey(message.id),
         bubbleBuilder: widget.bubbleBuilder,
         customMessageBuilder: widget.customMessageBuilder,
+        customHeaderTag: widget.customHeaderTag,
         fileMessageBuilder: widget.fileMessageBuilder,
         imageMessageBuilder: widget.imageMessageBuilder,
         message: message,
@@ -432,6 +441,8 @@ class _ChatState extends State<Chat> {
                           onTextFieldTap: widget.onTextFieldTap,
                           sendButtonVisibilityMode:
                               widget.sendButtonVisibilityMode,
+                          sendButtonIsInsideInputBackround:
+                            widget.sendButtonIsInsideInputBackround
                         ),
                   ],
                 ),

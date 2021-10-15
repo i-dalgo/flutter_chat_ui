@@ -16,6 +16,7 @@ class Message extends StatelessWidget {
     Key? key,
     this.bubbleBuilder,
     this.customMessageBuilder,
+    this.customHeaderTag,
     this.fileMessageBuilder,
     this.imageMessageBuilder,
     required this.message,
@@ -46,6 +47,9 @@ class Message extends StatelessWidget {
   /// Build a custom message inside predefined bubble
   final Widget Function(types.CustomMessage, {required int messageWidth})?
       customMessageBuilder;
+
+  /// See [TextMessage.customHeaderTag]
+  final Widget Function(BuildContext context)? customHeaderTag;
 
   /// Build a file message inside predefined bubble
   final Widget Function(types.FileMessage, {required int messageWidth})?
@@ -182,6 +186,7 @@ class Message extends StatelessWidget {
               )
             : TextMessage(
                 message: textMessage,
+                customHeaderTag: customHeaderTag,
                 onPreviewDataFetched: onPreviewDataFetched,
                 showName: showName,
                 usePreviewData: usePreviewData,
