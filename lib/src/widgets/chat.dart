@@ -411,8 +411,8 @@ class _ChatState extends State<Chat> {
                   children: [
                     Flexible(
                       child: GestureDetector(
-                        onTap: () => FocusManager.instance.primaryFocus
-                            ?.unfocus(),
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
                         child: widget.messages.isEmpty
                           ? SizedBox.expand(
                               child: _emptyStateBuilder(),
