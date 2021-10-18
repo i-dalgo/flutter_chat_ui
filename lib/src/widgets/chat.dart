@@ -411,6 +411,7 @@ class _ChatState extends State<Chat> {
                   children: [
                     Flexible(
                       child: GestureDetector(
+                        // [FORK] - close keyboard on click inside Column widget
                         behavior: HitTestBehavior.translucent,
                         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
                         child: widget.messages.isEmpty

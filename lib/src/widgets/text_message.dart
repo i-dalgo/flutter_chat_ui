@@ -72,7 +72,8 @@ class TextMessage extends StatelessWidget {
           .theme
           .userNameTextStyle
           .copyWith(color: color),
-      linkStyle: bodyTextStyle,
+      // [FORK] - link custom decoration underlined
+      linkStyle: bodyTextStyle.copyWith(decoration:TextDecoration.underline),
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
       onPreviewDataFetched: _onPreviewDataFetched,
