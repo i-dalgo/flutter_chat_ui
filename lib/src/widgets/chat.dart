@@ -8,6 +8,7 @@ import '../chat_l10n.dart';
 import '../chat_theme.dart';
 import '../conditional/conditional.dart';
 import '../models/date_header.dart';
+import '../models/emoji_enlargement_behavior.dart';
 import '../models/message_spacer.dart';
 import '../models/preview_image.dart';
 import '../models/send_button_visibility_mode.dart';
@@ -33,15 +34,18 @@ class Chat extends StatefulWidget {
     this.dateHeaderThreshold = 900000,
     this.dateLocale,
     this.disableImageGallery,
+    this.emojiEnlargementBehavior = EmojiEnlargementBehavior.multi,
     this.emptyState,
     this.fileMessageBuilder,
     this.groupMessagesThreshold = 60000,
+    this.hideBackgroundOnEmojiMessages = true,
     this.imageMessageBuilder,
     this.isAttachmentUploading,
     this.isLastPage,
     this.l10n = const ChatL10nEn(),
     required this.messages,
     this.onAttachmentPressed,
+    this.onBackgroundTap,
     this.onEndReached,
     this.onEndReachedThreshold,
     this.onMessageLongPress,
@@ -51,6 +55,7 @@ class Chat extends StatefulWidget {
     this.onTextChanged,
     this.onTextFieldTap,
     this.sendButtonIsInsideInputBackround = false,
+    this.scrollPhysics,
     this.sendButtonVisibilityMode = SendButtonVisibilityMode.editing,
     this.showUserAvatars = false,
     this.showUserNames = false,
@@ -109,6 +114,9 @@ class Chat extends StatefulWidget {
   /// Disable automatic image preview on tap.
   final bool? disableImageGallery;
 
+  /// See [Message.emojiEnlargementBehavior]
+  final EmojiEnlargementBehavior emojiEnlargementBehavior;
+
   /// Allows you to change what the user sees when there are no messages.
   /// `emptyChatPlaceholder` and `emptyChatPlaceholderTextStyle` are ignored
   /// in this case.
@@ -122,6 +130,9 @@ class Chat extends StatefulWidget {
   /// Default value is 1 minute, 60000 ms. When time between two messages
   /// is lower than this threshold, they will be visually grouped.
   final int groupMessagesThreshold;
+
+  /// See [Message.hideBackgroundOnEmojiMessages]
+  final bool hideBackgroundOnEmojiMessages;
 
   /// See [Message.imageMessageBuilder]
   final Widget Function(types.ImageMessage, {required int messageWidth})?
@@ -143,6 +154,9 @@ class Chat extends StatefulWidget {
 
   /// See [Input.onAttachmentPressed]
   final void Function()? onAttachmentPressed;
+
+  /// Called when user taps on background
+  final void Function()? onBackgroundTap;
 
   /// See [ChatList.onEndReached]
   final Future<void> Function()? onEndReached;
@@ -168,6 +182,9 @@ class Chat extends StatefulWidget {
 
   /// See [Input.onTextFieldTap]
   final void Function()? onTextFieldTap;
+
+  /// See [ChatList.scrollPhysics]
+  final ScrollPhysics? scrollPhysics;
 
   /// See [Input.sendButtonVisibilityMode]
   final SendButtonVisibilityMode sendButtonVisibilityMode;
@@ -316,10 +333,7 @@ class _ChatState extends State<Chat> {
     if (object is DateHeader) {
       return Container(
         alignment: Alignment.center,
-        margin: const EdgeInsets.only(
-          bottom: 32,
-          top: 16,
-        ),
+        margin: widget.theme.dateDividerMargin,
         child: Text(
           object.text,
           style: widget.theme.dateDividerTextStyle,
@@ -342,7 +356,9 @@ class _ChatState extends State<Chat> {
         bubbleBuilder: widget.bubbleBuilder,
         customMessageBuilder: widget.customMessageBuilder,
         customHeaderTag: widget.customHeaderTag,
+        emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
         fileMessageBuilder: widget.fileMessageBuilder,
+        hideBackgroundOnEmojiMessages: widget.hideBackgroundOnEmojiMessages,
         imageMessageBuilder: widget.imageMessageBuilder,
         message: message,
         messageWidth: _messageWidth,
@@ -418,17 +434,24 @@ class _ChatState extends State<Chat> {
                           ? SizedBox.expand(
                               child: _emptyStateBuilder(),
                             )
-                          : LayoutBuilder(
-                              builder: (BuildContext context,
-                                      BoxConstraints constraints) =>
-                                  ChatList(
-                                isLastPage: widget.isLastPage,
-                                itemBuilder: (item, index) =>
-                                    _messageBuilder(item, constraints),
-                                items: _chatMessages,
-                                onEndReached: widget.onEndReached,
-                                onEndReachedThreshold:
-                                    widget.onEndReachedThreshold,
+                          : GestureDetector(
+                              onTap: () {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                widget.onBackgroundTap?.call();
+                              },
+                              child: LayoutBuilder(
+                                builder: (BuildContext context,
+                                        BoxConstraints constraints) =>
+                                    ChatList(
+                                  isLastPage: widget.isLastPage,
+                                  itemBuilder: (item, index) =>
+                                      _messageBuilder(item, constraints),
+                                  items: _chatMessages,
+                                  onEndReached: widget.onEndReached,
+                                  onEndReachedThreshold:
+                                      widget.onEndReachedThreshold,
+                                  scrollPhysics: widget.scrollPhysics,
+                                ),
                               ),
                             ),
                       ),

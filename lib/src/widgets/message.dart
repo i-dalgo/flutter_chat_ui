@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import '../models/emoji_enlargement_behavior.dart';
 import '../util.dart';
 import 'file_message.dart';
 import 'image_message.dart';
@@ -17,7 +18,9 @@ class Message extends StatelessWidget {
     this.bubbleBuilder,
     this.customMessageBuilder,
     this.customHeaderTag,
+    required this.emojiEnlargementBehavior,
     this.fileMessageBuilder,
+    required this.hideBackgroundOnEmojiMessages,
     this.imageMessageBuilder,
     required this.message,
     required this.messageWidth,
@@ -50,10 +53,17 @@ class Message extends StatelessWidget {
 
   /// See [TextMessage.customHeaderTag]
   final Widget Function(BuildContext context)? customHeaderTag;
+  /// Controls the enlargement behavior of the emojis in the
+  /// [types.TextMessage].
+  /// Defaults to [EmojiEnlargementBehavior.multi].
+  final EmojiEnlargementBehavior emojiEnlargementBehavior;
 
   /// Build a file message inside predefined bubble
   final Widget Function(types.FileMessage, {required int messageWidth})?
       fileMessageBuilder;
+
+  /// Hide background for messages containing only emojis.
+  final bool hideBackgroundOnEmojiMessages;
 
   /// Build an image message inside predefined bubble
   final Widget Function(types.ImageMessage, {required int messageWidth})?
@@ -137,6 +147,7 @@ class Message extends StatelessWidget {
     BuildContext context,
     BorderRadius borderRadius,
     bool currentUserIsAuthor,
+    bool enlargeEmojis,
   ) {
     return bubbleBuilder != null
         ? bubbleBuilder!(
@@ -144,19 +155,21 @@ class Message extends StatelessWidget {
             message: message,
             nextMessageInGroup: roundBorder,
           )
-        : Container(
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              color: !currentUserIsAuthor ||
-                      message.type == types.MessageType.image
-                  ? InheritedChatTheme.of(context).theme.secondaryColor
-                  : InheritedChatTheme.of(context).theme.primaryColor,
-            ),
-            child: ClipRRect(
-              borderRadius: borderRadius,
-              child: _messageBuilder(),
-            ),
-          );
+        : enlargeEmojis && hideBackgroundOnEmojiMessages
+            ? _messageBuilder()
+            : Container(
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius,
+                  color: !currentUserIsAuthor ||
+                          message.type == types.MessageType.image
+                      ? InheritedChatTheme.of(context).theme.secondaryColor
+                      : InheritedChatTheme.of(context).theme.primaryColor,
+                ),
+                child: ClipRRect(
+                  borderRadius: borderRadius,
+                  child: _messageBuilder(),
+                ),
+              );
   }
 
   Widget _messageBuilder() {
@@ -185,6 +198,8 @@ class Message extends StatelessWidget {
                 showName: showName,
               )
             : TextMessage(
+                emojiEnlargementBehavior: emojiEnlargementBehavior,
+                hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
                 message: textMessage,
                 customHeaderTag: customHeaderTag,
                 onPreviewDataFetched: onPreviewDataFetched,
@@ -248,6 +263,11 @@ class Message extends StatelessWidget {
   Widget build(BuildContext context) {
     final _user = InheritedUser.of(context).user;
     final _currentUserIsAuthor = _user.id == message.author.id;
+    final _enlargeEmojis =
+        emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
+            message is types.TextMessage &&
+            isConsistsOfEmojis(
+                emojiEnlargementBehavior, message as types.TextMessage);
     final _messageBorderRadius =
         InheritedChatTheme.of(context).theme.messageBorderRadius;
     final _borderRadius = BorderRadius.only(
@@ -289,6 +309,7 @@ class Message extends StatelessWidget {
                     context,
                     _borderRadius,
                     _currentUserIsAuthor,
+                    _enlargeEmojis,
                   ),
                 ),
               ],
@@ -296,14 +317,8 @@ class Message extends StatelessWidget {
           ),
           if (_currentUserIsAuthor)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Center(
-                child: SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: showStatus ? _statusBuilder(context) : null,
-                ),
-              ),
+              padding: InheritedChatTheme.of(context).theme.statusIconPadding,
+              child: showStatus ? _statusBuilder(context) : null,
             ),
         ],
       ),
