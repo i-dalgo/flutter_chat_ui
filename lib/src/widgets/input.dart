@@ -217,7 +217,7 @@ class _InputState extends State<Input> {
                           ),
                         ),
                         Container(
-                          margin: widget.sendButtonIsInsideInputBackround ? EdgeInsets.only(right: 6, bottom: 6) : null,
+                          margin: widget.sendButtonIsInsideInputBackround ? const EdgeInsets.only(right: 6, bottom: 6) : null,
                           child: Visibility(
                             visible: _sendButtonVisible,
                             child: SendButton(
