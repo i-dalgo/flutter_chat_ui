@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -64,7 +65,7 @@ class _ChatPageState extends State<ChatPage> {
                     _handleImageSelection();
                   },
                   child: const Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     child: Text('Photo'),
                   ),
                 ),
@@ -74,14 +75,14 @@ class _ChatPageState extends State<ChatPage> {
                     _handleFileSelection();
                   },
                   child: const Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     child: Text('File'),
                   ),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: AlignmentDirectional.centerStart,
                     child: Text('Cancel'),
                   ),
                 ),
@@ -139,7 +140,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _handleMessageTap(types.Message message) async {
+  void _handleMessageTap(BuildContext context, types.Message message) async {
     if (message is types.FileMessage) {
       await OpenFile.open(message.uri);
     }
@@ -184,16 +185,13 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: Chat(
-          messages: _messages,
-          onAttachmentPressed: _handleAtachmentPressed,
-          onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          user: _user,
-        ),
+      body: Chat(
+        messages: _messages,
+        onAttachmentPressed: _handleAtachmentPressed,
+        onMessageTap: _handleMessageTap,
+        onPreviewDataFetched: _handlePreviewDataFetched,
+        onSendPressed: _handleSendPressed,
+        user: _user,
       ),
     );
   }

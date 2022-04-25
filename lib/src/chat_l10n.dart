@@ -29,6 +29,50 @@ abstract class ChatL10n {
   final String sendButtonAccessibilityLabel;
 }
 
+/// Arabic l10n which extends [ChatL10n]
+@immutable
+class ChatL10nAr extends ChatL10n {
+  /// Creates Arabic l10n. Use this constructor if you want to
+  /// override only a couple of properties, otherwise create a new class
+  /// which extends [ChatL10n]
+  const ChatL10nAr({
+    String attachmentButtonAccessibilityLabel = 'إرسال الوسائط',
+    String emptyChatPlaceholder = 'لا يوجد رسائل هنا بعد',
+    String fileButtonAccessibilityLabel = 'ملف',
+    String inputPlaceholder = 'الرسالة',
+    String sendButtonAccessibilityLabel = 'إرسال',
+  }) : super(
+          attachmentButtonAccessibilityLabel:
+              attachmentButtonAccessibilityLabel,
+          emptyChatPlaceholder: emptyChatPlaceholder,
+          fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
+          inputPlaceholder: inputPlaceholder,
+          sendButtonAccessibilityLabel: sendButtonAccessibilityLabel,
+        );
+}
+
+/// German l10n which extends [ChatL10n]
+@immutable
+class ChatL10nDe extends ChatL10n {
+  /// Creates German l10n. Use this constructor if you want to
+  /// override only a couple of variables, otherwise create a new class
+  /// which extends [ChatL10n]
+  const ChatL10nDe({
+    String attachmentButtonAccessibilityLabel = 'Medien senden',
+    String emptyChatPlaceholder = 'Noch keine Nachrichten',
+    String fileButtonAccessibilityLabel = 'Datei',
+    String inputPlaceholder = 'Nachricht',
+    String sendButtonAccessibilityLabel = 'Senden',
+  }) : super(
+          attachmentButtonAccessibilityLabel:
+              attachmentButtonAccessibilityLabel,
+          emptyChatPlaceholder: emptyChatPlaceholder,
+          fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
+          inputPlaceholder: inputPlaceholder,
+          sendButtonAccessibilityLabel: sendButtonAccessibilityLabel,
+        );
+}
+
 /// English l10n which extends [ChatL10n]
 @immutable
 class ChatL10nEn extends ChatL10n {
@@ -217,6 +261,28 @@ class ChatL10nZhCN extends ChatL10n {
     String fileButtonAccessibilityLabel = '文件',
     String inputPlaceholder = '输入消息',
     String sendButtonAccessibilityLabel = '发送',
+  }) : super(
+          attachmentButtonAccessibilityLabel:
+              attachmentButtonAccessibilityLabel,
+          emptyChatPlaceholder: emptyChatPlaceholder,
+          fileButtonAccessibilityLabel: fileButtonAccessibilityLabel,
+          inputPlaceholder: inputPlaceholder,
+          sendButtonAccessibilityLabel: sendButtonAccessibilityLabel,
+        );
+}
+
+/// Traditional Chinese l10n which extends [ChatL10n]
+@immutable
+class ChatL10nZhTW extends ChatL10n {
+  /// Creates Traditional Chinese l10n. Use this constructor if you want to
+  /// override only a couple of properties, otherwise create a new class
+  /// which extends [ChatL10n]
+  const ChatL10nZhTW({
+    String attachmentButtonAccessibilityLabel = '傳送媒體',
+    String emptyChatPlaceholder = '還沒有訊息在這裡',
+    String fileButtonAccessibilityLabel = '檔案',
+    String inputPlaceholder = '輸入訊息',
+    String sendButtonAccessibilityLabel = '傳送',
   }) : super(
           attachmentButtonAccessibilityLabel:
               attachmentButtonAccessibilityLabel,
