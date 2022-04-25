@@ -1,3 +1,65 @@
+## 1.5.8
+
+- Fix emoji messages. Thanks @felixgabler for the PR!
+- Add loading spinner support for the file message. Thanks @felixgabler for the PR!
+- Include safe area insets inside chat itself. No need to wrap in `SafeArea` anymore. Thanks @AdrKacz for reporting!
+
+## 1.5.7
+
+- Add scroller controller as a parameter. Thanks @Faaatman for the PR!
+- Make attachment button margin configurable. Thanks @felixgabler for the PR!
+- Add `avatarBuilder` and `nameBuilder` methods to resolve user updates and render correct avatars and names. Thanks @dariuspo and @felixgabler for the PR!
+- Fix broken text paddings. Thanks @AdrKacz for reporting!
+- Update dependencies
+
+## 1.5.6
+
+- Add markdown support. Thanks @felixgabler for the PR!
+- Add Arabic localization and RTL support. Thanks @Faaatman for the PR!
+- Increase send button tapable area. Thanks @felixgabler for the PR!
+- Add new `hidden` send button visibility mode. Thanks @fernandobatels for the PR!
+- Add `previewTapOptions` that allow to configure to open link preview when tapped on preview's image or title. Thanks @felixgabler for the PR!
+- Add `dateHeaderBuilder`. Thanks @arsamme for the PR!
+- Add `onMessageVisibilityChanged` handler. Thanks @felixgabler for the PR!
+- Add `receivedMessageBodyBoldTextStyle`, `receivedMessageBodyCodeTextStyle`, `receivedMessageBodyLinkTextStyle` and `sentMessageBodyBoldTextStyle`, `sentMessageBodyCodeTextStyle`, `sentMessageBodyLinkTextStyle` to the theme. Thanks @felixgabler for the PR!
+- Add `sendButtonMargin` to the theme. Thanks @damian-kaczmarek for the PR!
+- Add German localization. Thanks @felixgabler for the PR!
+- Fix emoji only horizontal margin. Thanks @munkius for the PR!
+- Update to Flutter 2.10.4. Requires Dart >= 2.16.0.
+
+## 1.5.5
+
+- Fix dark theme. Thanks @garv-shah for the PR!
+- Fix keyboard that pushes TextField to the top in mobile browsers. Thanks @jiangyubao for reporting!
+- Add `onMessageDoubleTap`. Thanks @leeyisoft for the PR!
+- Update dependencies
+
+## 1.5.4
+
+- **BREAKING CHANGE**: Rename `inputPadding` theme key to `inputMargin` (outer insets) and add `inputPadding` (inner insets, previously were hardcoded) 
+- **BREAKING CHANGE**: Add `BuildContext` as a first parameter for `onMessageLongPress`, `onMessageStatusLongPress`, `onMessageStatusTap`, `onMessageTap`. Thanks @leeyisoft for the PR!
+- Add `inputContainerDecoration` to the theme
+- Remove keyboard shortuts from Android and iOS platforms. Thanks @kyoungsongKim for reporting!
+- Use utf8 codec to parse chinese symbols in link preview. Thanks @minchemo for reporting!
+- Update dependencies. Requires Dart >= 2.15.1.
+
+## 1.5.3
+
+- Remove image blur
+- Update dependencies
+
+## 1.5.2
+
+- Add status icon tap and long press. Thanks @ikurek for the PR!
+- Add Traditional Chinese localization. Thanks @Wei-Hsun for the PR!
+- Add `onAvatarTap`
+- Fix local image preview on web
+- Update dependencies
+
+## 1.5.1
+
+- Increase tests coverage
+
 ## 1.5.0
 
 - Remove `Avenir` as a default font family
@@ -167,7 +229,7 @@ Theme migration guide:
 
 - Fix various URL preview bugs (see https://pub.dev/packages/flutter_link_previewer/changelog)
 - Add an option to disable URL preview. Thanks @Elementarereigniss for the PR!
-- Add portugese localization. Thanks @BerkSpar for the PR!
+- Add Portugese localization. Thanks @BerkSpar for the PR!
 - Update dependencies
 
 ## 1.0.2

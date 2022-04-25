@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+
 import '../conditional/conditional.dart';
 import '../util.dart';
 import 'inherited_chat_theme.dart';
@@ -95,7 +95,7 @@ class _ImageMessageState extends State<ImageMessage> {
           children: [
             Container(
               height: 64,
-              margin: EdgeInsets.fromLTRB(
+              margin: EdgeInsetsDirectional.fromSTEB(
                 InheritedChatTheme.of(context).theme.messageInsetsVertical,
                 InheritedChatTheme.of(context).theme.messageInsetsVertical,
                 16,
@@ -112,7 +112,7 @@ class _ImageMessageState extends State<ImageMessage> {
             ),
             Flexible(
               child: Container(
-                margin: EdgeInsets.fromLTRB(
+                margin: EdgeInsetsDirectional.fromSTEB(
                   0,
                   InheritedChatTheme.of(context).theme.messageInsetsVertical,
                   InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
@@ -160,20 +160,11 @@ class _ImageMessageState extends State<ImageMessage> {
           maxHeight: widget.messageWidth.toDouble(),
           minWidth: 170,
         ),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
+        child: AspectRatio(
+          aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
+          child: Image(
+            fit: BoxFit.contain,
             image: _image!,
-          ),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-          child: AspectRatio(
-            aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
-            child: Image(
-              fit: BoxFit.contain,
-              image: _image!,
-            ),
           ),
         ),
       );

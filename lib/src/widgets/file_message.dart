@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+
 import '../util.dart';
 import 'inherited_chat_theme.dart';
 import 'inherited_l10n.dart';
@@ -26,7 +27,7 @@ class FileMessage extends StatelessWidget {
     return Semantics(
       label: InheritedL10n.of(context).l10n.fileButtonAccessibilityLabel,
       child: Container(
-        padding: EdgeInsets.fromLTRB(
+        padding: EdgeInsetsDirectional.fromSTEB(
           InheritedChatTheme.of(context).theme.messageInsetsVertical,
           InheritedChatTheme.of(context).theme.messageInsetsVertical,
           InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
@@ -42,18 +43,30 @@ class FileMessage extends StatelessWidget {
               ),
               height: 42,
               width: 42,
-              child: InheritedChatTheme.of(context).theme.documentIcon != null
-                  ? InheritedChatTheme.of(context).theme.documentIcon!
-                  : Image.asset(
-                      'assets/icon-document.png',
-                      color: _color,
-                      package: 'flutter_chat_ui',
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (message.isLoading ?? false)
+                    Positioned.fill(
+                      child: CircularProgressIndicator(
+                        color: _color,
+                        strokeWidth: 2,
+                      ),
                     ),
+                  InheritedChatTheme.of(context).theme.documentIcon != null
+                      ? InheritedChatTheme.of(context).theme.documentIcon!
+                      : Image.asset(
+                          'assets/icon-document.png',
+                          color: _color,
+                          package: 'flutter_chat_ui',
+                        ),
+                ],
+              ),
             ),
             Flexible(
               child: Container(
-                margin: const EdgeInsets.only(
-                  left: 16,
+                margin: const EdgeInsetsDirectional.only(
+                  start: 16,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
