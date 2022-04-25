@@ -149,9 +149,9 @@ class _InputState extends State<Input> {
         .copyWith(left: 0, right: 0)
         .add(
           EdgeInsetsDirectional.fromSTEB(
-            widget.onAttachmentPressed != null ? 0 : 24,
+            widget.onAttachmentPressed != null ? 0 : 12,
             0,
-            _sendButtonVisible ? 0 : 24,
+            _sendButtonVisible ? 0 : 12,
             0,
           ),
         );

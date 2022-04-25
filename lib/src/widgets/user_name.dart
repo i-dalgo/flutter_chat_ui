@@ -10,10 +10,14 @@ class UserName extends StatelessWidget {
   const UserName({
     Key? key,
     required this.author,
+    this.customHeaderTag,
   }) : super(key: key);
 
   /// Author to show name from
   final types.User author;
+
+  /// Allows you to add a Tag next to author's name.
+  final Widget Function(BuildContext context)? customHeaderTag;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +29,23 @@ class UserName extends StatelessWidget {
         ? const SizedBox()
         : Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: Text(
-              name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.userNameTextStyle.copyWith(color: color),
-            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.userNameTextStyle.copyWith(color: color),
+                  )
+                ),
+                if (author.role == types.Role.admin && customHeaderTag != null)
+                  customHeaderTag!(context)
+              ]
+            )
           );
   }
 }

@@ -87,7 +87,6 @@ class TextMessage extends StatelessWidget {
 
     return LinkPreview(
       enableAnimation: true,
-      linkStyle: linkDescriptionTextStyle.copyWith(decoration:TextDecoration.underline),
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
       onPreviewDataFetched: _onPreviewDataFetched,
@@ -133,7 +132,7 @@ class TextMessage extends StatelessWidget {
       children: [
         if (showName)
           nameBuilder?.call(message.author.id) ??
-              UserName(author: message.author),
+              UserName(author: message.author, customHeaderTag: customHeaderTag),
         if (enlargeEmojis)
           if (isTextMessageTextSelectable)
             SelectableText(message.text, style: emojiTextStyle)
