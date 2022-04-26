@@ -66,7 +66,6 @@ class Chat extends StatefulWidget {
     required this.onSendPressed,
     this.onTextChanged,
     this.onTextFieldTap,
-    this.sendButtonIsInsideInputBackround = false,
     this.previewTapOptions = const PreviewTapOptions(),
     this.scrollController,
     this.scrollPhysics,
@@ -236,9 +235,6 @@ class Chat extends StatefulWidget {
 
   /// See [Input.sendButtonVisibilityMode]
   final SendButtonVisibilityMode sendButtonVisibilityMode;
-
-  /// See [Input.sendButtonIsInsideInputBackround]
-  final bool sendButtonIsInsideInputBackround;
 
   /// See [Message.showUserAvatars]
   final bool showUserAvatars;
@@ -528,8 +524,6 @@ class _ChatState extends State<Chat> {
                           onTextFieldTap: widget.onTextFieldTap,
                           sendButtonVisibilityMode:
                               widget.sendButtonVisibilityMode,
-                          sendButtonIsInsideInputBackround:
-                            widget.sendButtonIsInsideInputBackround
                         ),
                   ],
                 ),
