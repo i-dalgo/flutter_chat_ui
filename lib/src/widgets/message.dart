@@ -171,7 +171,7 @@ class Message extends StatelessWidget {
             nextMessageInGroup: roundBorder,
           )
         : enlargeEmojis && hideBackgroundOnEmojiMessages
-            ? _messageBuilder()
+            ? Container(color: Colors.transparent, child: _messageBuilder()) // HOTFIX : remove emoji's glitch when is most recent message
             : Container(
                 decoration: BoxDecoration(
                   borderRadius: borderRadius,
