@@ -326,10 +326,10 @@ class Message extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Builder(
-                  builder: (BuildContext innerContext) => GestureDetector(
-                    onDoubleTap: () => onMessageDoubleTap?.call(context, message),
+                  builder: (BuildContext innerContext) => GestureDetector( // HOTFIX: handle actions on bubble itself.
+                    onDoubleTap: () => onMessageDoubleTap?.call(innerContext, message),
                     onLongPress: () => onMessageLongPress?.call(innerContext, message),
-                    onTap: () => onMessageTap?.call(context, message),
+                    onTap: () => onMessageTap?.call(innerContext, message),
                     child: onMessageVisibilityChanged != null
                         ? VisibilityDetector(
                             key: Key(message.id),
