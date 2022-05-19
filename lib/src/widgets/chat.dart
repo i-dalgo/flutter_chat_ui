@@ -200,7 +200,7 @@ class Chat extends StatefulWidget {
   final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
 
   /// See [Message.onMessageLongPress]
-  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius)? onMessageLongPress;
+  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius, bool Function()? mounted)? onMessageLongPress;
 
   /// See [Message.onMessageStatusLongPress]
   final void Function(BuildContext context, types.Message)?
@@ -489,7 +489,7 @@ class _ChatState extends State<Chat> {
                   children: [
                     Flexible(
                       child: GestureDetector(
-                        // [FORK] - close keyboard on click inside Column widget
+                        // [FORK-MODIFICATION] - close keyboard on click inside Column widget
                         behavior: HitTestBehavior.translucent,
                         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
                         child: widget.messages.isEmpty

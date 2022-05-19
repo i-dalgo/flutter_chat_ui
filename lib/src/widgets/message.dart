@@ -16,7 +16,9 @@ import 'user_avatar.dart';
 /// Base widget for all message types in the chat. Renders bubbles around
 /// messages and status. Sets maximum width for a message for
 /// a nice look on larger screens.
-class Message extends StatelessWidget {
+
+// [FORK-MODIFICATION] : Message become a StatefulWidget to avoid red screen of death on message delete from Popover.
+class Message extends StatefulWidget {
   /// Creates a particular message from any message type
   const Message({
     Key? key,
@@ -106,7 +108,8 @@ class Message extends StatelessWidget {
   final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
 
   /// Called when user makes a long press on any message
-  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius)? onMessageLongPress;
+  /// [FORK-MODIFICATION] : add borderRadius & mounted for Popover widget
+  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius, bool Function()? mounted)? onMessageLongPress;
 
   /// Called when user makes a long press on status icon in any message
   final void Function(BuildContext context, types.Message)?
@@ -153,9 +156,14 @@ class Message extends StatelessWidget {
   /// See [TextMessage.usePreviewData]
   final bool usePreviewData;
 
-  Widget _avatarBuilder() => showAvatar
-      ? avatarBuilder?.call(message.author.id) ??
-          UserAvatar(author: message.author, onAvatarTap: onAvatarTap)
+  @override
+  _MessageState createState() => _MessageState();
+}
+class _MessageState extends State<Message> {
+
+  Widget _avatarBuilder() => widget.showAvatar
+      ? widget.avatarBuilder?.call(widget.message.author.id) ??
+          UserAvatar(author: widget.message.author, onAvatarTap: widget.onAvatarTap)
       : const SizedBox(width: 40);
 
   Widget _bubbleBuilder(
@@ -164,19 +172,19 @@ class Message extends StatelessWidget {
     bool currentUserIsAuthor,
     bool enlargeEmojis,
   ) {
-    return bubbleBuilder != null
-        ? bubbleBuilder!(
+    return widget.bubbleBuilder != null
+        ? widget.bubbleBuilder!(
             _messageBuilder(),
-            message: message,
-            nextMessageInGroup: roundBorder,
+            message: widget.message,
+            nextMessageInGroup: widget.roundBorder,
           )
-        : enlargeEmojis && hideBackgroundOnEmojiMessages
+        : enlargeEmojis && widget.hideBackgroundOnEmojiMessages
             ? Container(color: Colors.transparent, child: _messageBuilder()) // HOTFIX : remove emoji's glitch when is most recent message
             : Container(
                 decoration: BoxDecoration(
                   borderRadius: borderRadius,
                   color: !currentUserIsAuthor ||
-                          message.type == types.MessageType.image
+                          widget.message.type == types.MessageType.image
                       ? InheritedChatTheme.of(context).theme.secondaryColor
                       : InheritedChatTheme.of(context).theme.primaryColor,
                 ),
@@ -188,41 +196,41 @@ class Message extends StatelessWidget {
   }
 
   Widget _messageBuilder() {
-    switch (message.type) {
+    switch (widget.message.type) {
       case types.MessageType.custom:
-        final customMessage = message as types.CustomMessage;
-        return customMessageBuilder != null
-            ? customMessageBuilder!(customMessage, messageWidth: messageWidth)
+        final customMessage = widget.message as types.CustomMessage;
+        return widget.customMessageBuilder != null
+            ? widget.customMessageBuilder!(customMessage, messageWidth: widget.messageWidth)
             : const SizedBox();
       case types.MessageType.file:
-        final fileMessage = message as types.FileMessage;
-        return fileMessageBuilder != null
-            ? fileMessageBuilder!(fileMessage, messageWidth: messageWidth)
+        final fileMessage = widget.message as types.FileMessage;
+        return widget.fileMessageBuilder != null
+            ? widget.fileMessageBuilder!(fileMessage, messageWidth: widget.messageWidth)
             : FileMessage(message: fileMessage);
       case types.MessageType.image:
-        final imageMessage = message as types.ImageMessage;
-        return imageMessageBuilder != null
-            ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
-            : ImageMessage(message: imageMessage, messageWidth: messageWidth);
+        final imageMessage = widget.message as types.ImageMessage;
+        return widget.imageMessageBuilder != null
+            ? widget.imageMessageBuilder!(imageMessage, messageWidth: widget.messageWidth)
+            : ImageMessage(message: imageMessage, messageWidth: widget.messageWidth);
       case types.MessageType.text:
-        final textMessage = message as types.TextMessage;
-        return textMessageBuilder != null
-            ? textMessageBuilder!(
+        final textMessage = widget.message as types.TextMessage;
+        return widget.textMessageBuilder != null
+            ? widget.textMessageBuilder!(
                 textMessage,
-                messageWidth: messageWidth,
-                showName: showName,
+                messageWidth: widget.messageWidth,
+                showName: widget.showName,
               )
             : TextMessage(
-                emojiEnlargementBehavior: emojiEnlargementBehavior,
-                hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
-                isTextMessageTextSelectable: isTextMessageTextSelectable,
+                emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
+                hideBackgroundOnEmojiMessages: widget.hideBackgroundOnEmojiMessages,
+                isTextMessageTextSelectable: widget.isTextMessageTextSelectable,
                 message: textMessage,
-                customHeaderTag: customHeaderTag,
-                nameBuilder: nameBuilder,
-                onPreviewDataFetched: onPreviewDataFetched,
-                previewTapOptions: previewTapOptions,
-                showName: showName,
-                usePreviewData: usePreviewData,
+                customHeaderTag: widget.customHeaderTag,
+                nameBuilder: widget.nameBuilder,
+                onPreviewDataFetched: widget.onPreviewDataFetched,
+                previewTapOptions: widget.previewTapOptions,
+                showName: widget.showName,
+                usePreviewData: widget.usePreviewData,
               );
       default:
         return const SizedBox();
@@ -230,7 +238,7 @@ class Message extends StatelessWidget {
   }
 
   Widget _statusBuilder(BuildContext context) {
-    switch (message.status) {
+    switch (widget.message.status) {
       case types.Status.delivered:
       case types.Status.sent:
         return InheritedChatTheme.of(context).theme.deliveredIcon != null
@@ -281,24 +289,24 @@ class Message extends StatelessWidget {
   Widget build(BuildContext context) {
     final _query = MediaQuery.of(context);
     final _user = InheritedUser.of(context).user;
-    final _currentUserIsAuthor = _user.id == message.author.id;
+    final _currentUserIsAuthor = _user.id == widget.message.author.id;
     final _enlargeEmojis =
-        emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
-            message is types.TextMessage &&
+        widget.emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
+            widget.message is types.TextMessage &&
             isConsistsOfEmojis(
-                emojiEnlargementBehavior, message as types.TextMessage);
+                widget.emojiEnlargementBehavior, widget.message as types.TextMessage);
     final _messageBorderRadius =
         InheritedChatTheme.of(context).theme.messageBorderRadius;
     final _borderRadius = BorderRadiusDirectional.only(
       bottomEnd: Radius.circular(
         _currentUserIsAuthor
-            ? roundBorder
+            ? widget.roundBorder
                 ? _messageBorderRadius
                 : 0
             : _messageBorderRadius,
       ),
       bottomStart: Radius.circular(
-        _currentUserIsAuthor || roundBorder ? _messageBorderRadius : 0,
+        _currentUserIsAuthor || widget.roundBorder ? _messageBorderRadius : 0,
       ),
       topEnd: Radius.circular(_messageBorderRadius),
       topStart: Radius.circular(_messageBorderRadius),
@@ -317,24 +325,24 @@ class Message extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!_currentUserIsAuthor && showUserAvatars) _avatarBuilder(),
+          if (!_currentUserIsAuthor && widget.showUserAvatars) _avatarBuilder(),
           ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: messageWidth.toDouble(),
+              maxWidth: widget.messageWidth.toDouble(),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Builder(
                   builder: (BuildContext innerContext) => GestureDetector( // HOTFIX: handle actions on bubble itself.
-                    onDoubleTap: () => onMessageDoubleTap?.call(innerContext, message),
-                    onLongPress: () => onMessageLongPress?.call(innerContext, message, _borderRadius),
-                    onTap: () => onMessageTap?.call(innerContext, message),
-                    child: onMessageVisibilityChanged != null
+                    onDoubleTap: () => widget.onMessageDoubleTap?.call(innerContext, widget.message),
+                    onLongPress: () => widget.onMessageLongPress?.call(innerContext, widget.message, _borderRadius, () => mounted),
+                    onTap: () => widget.onMessageTap?.call(innerContext, widget.message),
+                    child: widget.onMessageVisibilityChanged != null
                         ? VisibilityDetector(
-                            key: Key(message.id),
+                            key: Key(widget.message.id),
                             onVisibilityChanged: (visibilityInfo) =>
-                                onMessageVisibilityChanged!(message,
+                                widget.onMessageVisibilityChanged!(widget.message,
                                     visibilityInfo.visibleFraction > 0.1),
                             child: _bubbleBuilder(
                               context,
@@ -357,11 +365,11 @@ class Message extends StatelessWidget {
           if (_currentUserIsAuthor)
             Padding(
               padding: InheritedChatTheme.of(context).theme.statusIconPadding,
-              child: showStatus
+              child: widget.showStatus
                   ? GestureDetector(
                       onLongPress: () =>
-                          onMessageStatusLongPress?.call(context, message),
-                      onTap: () => onMessageStatusTap?.call(context, message),
+                          widget.onMessageStatusLongPress?.call(context, widget.message),
+                      onTap: () => widget.onMessageStatusTap?.call(context, widget.message),
                       child: _statusBuilder(context),
                     )
                   : null,
