@@ -76,6 +76,7 @@ class Chat extends StatefulWidget {
     this.theme = const DefaultChatTheme(),
     this.timeFormat,
     this.usePreviewData = true,
+    this.customFeedback,
     required this.user,
   }) : super(key: key);
 
@@ -92,6 +93,9 @@ class Chat extends StatefulWidget {
   /// Allows you to replace the default Input widget e.g. if you want to create
   /// a channel view.
   final Widget? customBottomWidget;
+
+  /// [FORK-MODIFICATION] Allows you to replace the default feedback widget
+  final Widget? customFeedback;
 
   /// If [dateFormat], [dateLocale] and/or [timeFormat] is not enough to
   /// customize date headers in your case, use this to return an arbitrary
@@ -196,7 +200,7 @@ class Chat extends StatefulWidget {
   final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
 
   /// See [Message.onMessageLongPress]
-  final void Function(BuildContext context, types.Message)? onMessageLongPress;
+  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius)? onMessageLongPress;
 
   /// See [Message.onMessageStatusLongPress]
   final void Function(BuildContext context, types.Message)?
@@ -498,18 +502,27 @@ class _ChatState extends State<Chat> {
                                 widget.onBackgroundTap?.call();
                               },
                               child: LayoutBuilder(
-                                builder: (BuildContext context,
-                                        BoxConstraints constraints) =>
+                                builder: (BuildContext context, BoxConstraints constraints) => Stack(
+                                  children: [
                                     ChatList(
-                                  isLastPage: widget.isLastPage,
-                                  itemBuilder: (item, index) =>
-                                      _messageBuilder(item, constraints),
-                                  items: _chatMessages,
-                                  onEndReached: widget.onEndReached,
-                                  onEndReachedThreshold:
-                                      widget.onEndReachedThreshold,
-                                  scrollController: widget.scrollController,
-                                  scrollPhysics: widget.scrollPhysics,
+                                      isLastPage: widget.isLastPage,
+                                      itemBuilder: (item, index) => _messageBuilder(item, constraints),
+                                      items: _chatMessages,
+                                      onEndReached: widget.onEndReached,
+                                      onEndReachedThreshold: widget.onEndReachedThreshold,
+                                      scrollController: widget.scrollController,
+                                      scrollPhysics: widget.scrollPhysics,
+                                    ),
+                                    // [FORK-MODIFICATION]
+                                    if (widget.customFeedback != null) ...[
+                                      Positioned.fill(
+                                        child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: widget.customFeedback
+                                        ),
+                                      ),
+                                    ]
+                                  ]
                                 ),
                               ),
                             ),

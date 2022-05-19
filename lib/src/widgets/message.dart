@@ -106,7 +106,7 @@ class Message extends StatelessWidget {
   final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
 
   /// Called when user makes a long press on any message
-  final void Function(BuildContext context, types.Message)? onMessageLongPress;
+  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius)? onMessageLongPress;
 
   /// Called when user makes a long press on status icon in any message
   final void Function(BuildContext context, types.Message)?
@@ -328,7 +328,7 @@ class Message extends StatelessWidget {
                 Builder(
                   builder: (BuildContext innerContext) => GestureDetector( // HOTFIX: handle actions on bubble itself.
                     onDoubleTap: () => onMessageDoubleTap?.call(innerContext, message),
-                    onLongPress: () => onMessageLongPress?.call(innerContext, message),
+                    onLongPress: () => onMessageLongPress?.call(innerContext, message, _borderRadius),
                     onTap: () => onMessageTap?.call(innerContext, message),
                     child: onMessageVisibilityChanged != null
                         ? VisibilityDetector(
