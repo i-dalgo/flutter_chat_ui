@@ -21,7 +21,7 @@ import 'user_avatar.dart';
 class Message extends StatefulWidget {
   /// Creates a particular message from any message type
   const Message({
-    Key? key,
+    super.key,
     this.avatarBuilder,
     this.bubbleBuilder,
     this.customMessageBuilder,
@@ -50,7 +50,7 @@ class Message extends StatefulWidget {
     required this.showUserAvatars,
     this.textMessageBuilder,
     required this.usePreviewData,
-  }) : super(key: key);
+  });
 
   /// This is to allow custom user avatar builder
   /// By using this we can fetch newest user info based on id
@@ -287,45 +287,45 @@ class _MessageState extends State<Message> {
 
   @override
   Widget build(BuildContext context) {
-    final _query = MediaQuery.of(context);
-    final _user = InheritedUser.of(context).user;
-    final _currentUserIsAuthor = _user.id == widget.message.author.id;
-    final _enlargeEmojis =
+    final query = MediaQuery.of(context);
+    final user = InheritedUser.of(context).user;
+    final currentUserIsAuthor = user.id == widget.message.author.id;
+    final enlargeEmojis =
         widget.emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
             widget.message is types.TextMessage &&
             isConsistsOfEmojis(
                 widget.emojiEnlargementBehavior, widget.message as types.TextMessage);
-    final _messageBorderRadius =
+    final messageBorderRadius =
         InheritedChatTheme.of(context).theme.messageBorderRadius;
-    final _borderRadius = BorderRadiusDirectional.only(
+    final borderRadius = BorderRadiusDirectional.only(
       bottomEnd: Radius.circular(
-        _currentUserIsAuthor
+        currentUserIsAuthor
             ? widget.roundBorder
-                ? _messageBorderRadius
+                ? messageBorderRadius
                 : 0
-            : _messageBorderRadius,
+            : messageBorderRadius,
       ),
       bottomStart: Radius.circular(
-        _currentUserIsAuthor || widget.roundBorder ? _messageBorderRadius : 0,
+        currentUserIsAuthor || widget.roundBorder ? messageBorderRadius : 0,
       ),
-      topEnd: Radius.circular(_messageBorderRadius),
-      topStart: Radius.circular(_messageBorderRadius),
+      topEnd: Radius.circular(messageBorderRadius),
+      topStart: Radius.circular(messageBorderRadius),
     );
 
     return Container(
-      alignment: _currentUserIsAuthor
+      alignment: currentUserIsAuthor
           ? AlignmentDirectional.centerEnd
           : AlignmentDirectional.centerStart,
       margin: EdgeInsetsDirectional.only(
         bottom: 4,
-        end: kIsWeb ? 0 : _query.padding.right,
-        start: 20 + (kIsWeb ? 0 : _query.padding.left),
+        end: kIsWeb ? 0 : query.padding.right,
+        start: 20 + (kIsWeb ? 0 : query.padding.left),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!_currentUserIsAuthor && widget.showUserAvatars) _avatarBuilder(),
+          if (!currentUserIsAuthor && widget.showUserAvatars) _avatarBuilder(),
           ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: widget.messageWidth.toDouble(),
@@ -336,33 +336,33 @@ class _MessageState extends State<Message> {
                 Builder(
                   builder: (BuildContext innerContext) => GestureDetector( // HOTFIX: handle actions on bubble itself.
                     onDoubleTap: () => widget.onMessageDoubleTap?.call(innerContext, widget.message),
-                    onLongPress: () => widget.onMessageLongPress?.call(innerContext, widget.message, _borderRadius, () => mounted),
+                    onLongPress: () => widget.onMessageLongPress?.call(innerContext, widget.message, borderRadius, () => mounted),
                     onTap: () => widget.onMessageTap?.call(innerContext, widget.message),
                     child: widget.onMessageVisibilityChanged != null
-                        ? VisibilityDetector(
-                            key: Key(widget.message.id),
-                            onVisibilityChanged: (visibilityInfo) =>
-                                widget.onMessageVisibilityChanged!(widget.message,
-                                    visibilityInfo.visibleFraction > 0.1),
-                            child: _bubbleBuilder(
-                              context,
-                              _borderRadius.resolve(Directionality.of(context)),
-                              _currentUserIsAuthor,
-                              _enlargeEmojis,
-                            ),
-                          )
-                        : _bubbleBuilder(
+                      ? VisibilityDetector(
+                          key: Key(widget.message.id),
+                          onVisibilityChanged: (visibilityInfo) =>
+                              widget.onMessageVisibilityChanged!(widget.message,
+                                  visibilityInfo.visibleFraction > 0.1),
+                          child: _bubbleBuilder(
                             context,
-                            _borderRadius.resolve(Directionality.of(context)),
-                            _currentUserIsAuthor,
-                            _enlargeEmojis,
+                            borderRadius.resolve(Directionality.of(context)),
+                            currentUserIsAuthor,
+                            enlargeEmojis,
                           ),
-                  ),
+                        )
+                      : _bubbleBuilder(
+                          context,
+                          borderRadius.resolve(Directionality.of(context)),
+                          currentUserIsAuthor,
+                          enlargeEmojis,
+                        ),
+                      )
                 ),
               ],
             ),
           ),
-          if (_currentUserIsAuthor)
+          if (currentUserIsAuthor)
             Padding(
               padding: InheritedChatTheme.of(context).theme.statusIconPadding,
               child: widget.showStatus

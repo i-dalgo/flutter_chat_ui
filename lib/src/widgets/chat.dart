@@ -27,7 +27,7 @@ import 'message.dart';
 class Chat extends StatefulWidget {
   /// Creates a chat widget
   const Chat({
-    Key? key,
+    super.key,
     this.avatarBuilder,
     this.bubbleBuilder,
     this.customBottomWidget,
@@ -78,7 +78,7 @@ class Chat extends StatefulWidget {
     this.usePreviewData = true,
     this.customFeedback,
     required this.user,
-  }) : super(key: key);
+  });
 
   /// See [Message.avatarBuilder]
   final Widget Function(String userId)? avatarBuilder;
@@ -273,7 +273,7 @@ class Chat extends StatefulWidget {
   final types.User user;
 
   @override
-  _ChatState createState() => _ChatState();
+  State<Chat> createState() => _ChatState();
 }
 
 /// [Chat] widget state
@@ -399,7 +399,7 @@ class _ChatState extends State<Chat> {
     } else {
       final map = object as Map<String, Object>;
       final message = map['message']! as types.Message;
-      final _messageWidth =
+      final messageWidth =
           widget.showUserAvatars && message.author.id != widget.user.id
               ? min(constraints.maxWidth * 0.72, 440).floor()
               : min(constraints.maxWidth * 0.78, 440).floor();
@@ -416,7 +416,7 @@ class _ChatState extends State<Chat> {
         imageMessageBuilder: widget.imageMessageBuilder,
         isTextMessageTextSelectable: widget.isTextMessageTextSelectable,
         message: message,
-        messageWidth: _messageWidth,
+        messageWidth: messageWidth,
         nameBuilder: widget.nameBuilder,
         onAvatarTap: widget.onAvatarTap,
         onMessageDoubleTap: widget.onMessageDoubleTap,
