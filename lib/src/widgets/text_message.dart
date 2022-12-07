@@ -27,6 +27,7 @@ class TextMessage extends StatelessWidget {
     required this.previewTapOptions,
     required this.usePreviewData,
     required this.showName,
+    required this.customPatterns,
   });
 
   /// See [Message.emojiEnlargementBehavior]
@@ -57,6 +58,9 @@ class TextMessage extends StatelessWidget {
 
   /// Enables link (URL) preview
   final bool usePreviewData;
+
+  // Enables custom patterns
+  final List<MatchText> customPatterns;
 
   /// Allows you to add a Tag next to author's name.
   final Widget Function(BuildContext context)? customHeaderTag;
@@ -141,6 +145,7 @@ class TextMessage extends StatelessWidget {
         else
           ParsedText(
             parse: [
+              ...customPatterns,
               MatchText(
                 onTap: (mail) async {
                   final url = Uri(scheme: 'mailto', path: mail);

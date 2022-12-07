@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/src/widgets/inherited_l10n.dart';
+import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -21,6 +22,7 @@ import 'inherited_chat_theme.dart';
 import 'inherited_user.dart';
 import 'input.dart';
 import 'message.dart';
+import 'text_message.dart';
 
 /// Entry widget, represents the complete chat. If you wrap it in [SafeArea] and
 /// it should be full screen, set [SafeArea]'s `bottom` to `false`.
@@ -77,6 +79,7 @@ class Chat extends StatefulWidget {
     this.timeFormat,
     this.usePreviewData = true,
     this.customFeedback,
+    this.customPatterns = const [],
     required this.user,
   });
 
@@ -246,6 +249,9 @@ class Chat extends StatefulWidget {
   /// Show user names for received messages. Useful for a group chat. Will be
   /// shown only on text messages.
   final bool showUserNames;
+
+  /// See [TextMessage.customPatterns]
+  final List<MatchText> customPatterns;
 
   /// See [Message.textMessageBuilder]
   final Widget Function(
@@ -441,6 +447,7 @@ class _ChatState extends State<Chat> {
         showUserAvatars: widget.showUserAvatars,
         textMessageBuilder: widget.textMessageBuilder,
         usePreviewData: widget.usePreviewData,
+        customPatterns: widget.customPatterns,
       );
     }
   }

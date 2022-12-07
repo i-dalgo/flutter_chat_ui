@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../models/emoji_enlargement_behavior.dart';
@@ -49,6 +50,7 @@ class Message extends StatefulWidget {
     required this.showStatus,
     required this.showUserAvatars,
     this.textMessageBuilder,
+    required this.customPatterns,
     required this.usePreviewData,
   });
 
@@ -146,6 +148,9 @@ class Message extends StatefulWidget {
   /// Show user avatars for received messages. Useful for a group chat.
   final bool showUserAvatars;
 
+  // Enables custom patterns
+  final List<MatchText> customPatterns;
+
   /// Build a text message inside predefined bubble.
   final Widget Function(
     types.TextMessage, {
@@ -231,6 +236,7 @@ class _MessageState extends State<Message> {
                 previewTapOptions: widget.previewTapOptions,
                 showName: widget.showName,
                 usePreviewData: widget.usePreviewData,
+                customPatterns: widget.customPatterns,
               );
       default:
         return const SizedBox();
