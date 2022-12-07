@@ -148,7 +148,7 @@ class Message extends StatefulWidget {
   /// Show user avatars for received messages. Useful for a group chat.
   final bool showUserAvatars;
 
-  // Enables custom patterns
+  /// See [TextMessage.customPatterns]
   final List<MatchText> customPatterns;
 
   /// Build a text message inside predefined bubble.
