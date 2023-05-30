@@ -18,7 +18,7 @@ dependencies:
   flutter_chat_types: ^3.4.1
   flutter_link_previewer: ^3.0.0
   flutter_parsed_text: ^2.2.1
-  intl: ^0.18.0
+  intl: ^0.17.0
   meta: ^1.7.0
   photo_view: ^0.14.0
   url_launcher: ^6.1.3
