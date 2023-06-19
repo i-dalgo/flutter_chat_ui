@@ -145,6 +145,7 @@ class TextMessage extends StatelessWidget {
         else
           ParsedText(
             parse: [
+              ...customPatterns,
               MatchText(
                 onTap: (mail) async {
                   final url = Uri(scheme: 'mailto', path: mail);
@@ -214,7 +215,6 @@ class TextMessage extends StatelessWidget {
                   return {'display': str.replaceAll('`', '')};
                 },
               ),
-              ...customPatterns,
             ],
             regexOptions: const RegexOptions(multiLine: true, dotAll: true),
             selectable: isTextMessageTextSelectable,
