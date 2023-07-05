@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart' show PhotoViewComputedScale;
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -96,7 +95,6 @@ class Chat extends StatefulWidget {
     this.typingIndicatorOptions = const TypingIndicatorOptions(),
     this.usePreviewData = true,
     this.customFeedback,
-    this.customPatterns = const [],
     this.customEmojiWidget,
     required this.user,
     this.userAgent,
@@ -134,7 +132,7 @@ class Chat extends StatefulWidget {
   final Widget Function(types.CustomMessage, {required int messageWidth})?
       customMessageBuilder;
 
-  /// See [Message.customEmojiWidget].
+  /// See [TextMessage.customEmojiWidget].
   final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
       customEmojiWidget;
 
@@ -254,7 +252,7 @@ class Chat extends StatefulWidget {
   final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
 
   /// [FORK-MODIFICATION]: See [Message.onMessageLongPress].
-  final void Function(BuildContext context, types.Message, BorderRadiusGeometry borderRadius, bool Function()? mounted)? onMessageLongPress;
+  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius, bool Function()? mounted)? onMessageLongPress;
 
   /// See [Message.onMessageStatusLongPress].
   final void Function(BuildContext context, types.Message)?
@@ -292,9 +290,6 @@ class Chat extends StatefulWidget {
   /// Show user names for received messages. Useful for a group chat. Will be
   /// shown only on text messages.
   final bool showUserNames;
-
-  /// [FORK-MODIFICATION]: See [TextMessage.customPatterns].
-  final List<MatchText> customPatterns;
 
   /// See [Message.textMessageBuilder]
   /// Builds a system message outside of any bubble.
@@ -496,7 +491,6 @@ class ChatState extends State<Chat> {
           textMessageOptions: widget.textMessageOptions,
           usePreviewData: widget.usePreviewData,
           userAgent: widget.userAgent,
-          customPatterns: widget.customPatterns,
           customEmojiWidget: widget.customEmojiWidget,
           customHeaderTag: widget.customHeaderTag,
           videoMessageBuilder: widget.videoMessageBuilder,
@@ -614,30 +608,43 @@ class ChatState extends State<Chat> {
                                     BuildContext context,
                                     BoxConstraints constraints,
                                   ) =>
-                                      ChatList(
-                                    bottomWidget: widget.listBottomWidget,
-                                    bubbleRtlAlignment:
-                                        widget.bubbleRtlAlignment!,
-                                    isLastPage: widget.isLastPage,
-                                    itemBuilder: (Object item, int? index) =>
-                                        _messageBuilder(
-                                      item,
-                                      constraints,
-                                      index,
-                                    ),
-                                    items: _chatMessages,
-                                    keyboardDismissBehavior:
-                                        widget.keyboardDismissBehavior,
-                                    onEndReached: widget.onEndReached,
-                                    onEndReachedThreshold:
-                                        widget.onEndReachedThreshold,
-                                    scrollController: _scrollController,
-                                    scrollPhysics: widget.scrollPhysics,
-                                    typingIndicatorOptions:
-                                        widget.typingIndicatorOptions,
-                                    useTopSafeAreaInset:
-                                        widget.useTopSafeAreaInset ?? isMobile,
-                                  ),
+                                      Stack(
+                                        children: [
+                                          ChatList(
+                                            bottomWidget: widget.listBottomWidget,
+                                            bubbleRtlAlignment:
+                                                    widget.bubbleRtlAlignment!,
+                                            isLastPage: widget.isLastPage,
+                                            itemBuilder: (Object item, int? index) =>
+                                                    _messageBuilder(
+                                                  item,
+                                                  constraints,
+                                                  index,
+                                            ),
+                                            items: _chatMessages,
+                                            keyboardDismissBehavior:
+                                                    widget.keyboardDismissBehavior,
+                                            onEndReached: widget.onEndReached,
+                                            onEndReachedThreshold:
+                                                    widget.onEndReachedThreshold,
+                                            scrollController: _scrollController,
+                                            scrollPhysics: widget.scrollPhysics,
+                                            typingIndicatorOptions:
+                                                    widget.typingIndicatorOptions,
+                                            useTopSafeAreaInset:
+                                                    widget.useTopSafeAreaInset ?? isMobile,
+                                          ),
+                                          // [FORK-MODIFICATION].
+                                          if (widget.customFeedback != null) ...[
+                                            Positioned.fill(
+                                              child: Align(
+                                                alignment: Alignment.bottomCenter,
+                                                child: widget.customFeedback,
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
                                 ),
                               ),
                       ),

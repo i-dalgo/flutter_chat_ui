@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../conditional/conditional.dart';
@@ -57,7 +56,6 @@ class Message extends StatefulWidget {
     required this.showStatus,
     required this.showUserAvatars,
     this.textMessageBuilder,
-    required this.customPatterns,
     required this.textMessageOptions,
     required this.usePreviewData,
     this.userAgent,
@@ -91,7 +89,7 @@ class Message extends StatefulWidget {
   final Widget Function(types.CustomMessage, {required int messageWidth})?
       customMessageBuilder;
 
-  /// [FORK-MODIFICATION]: Build a custom emoji widget.
+  /// See [TextMessage.customEmojiWidget].
   final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
       customEmojiWidget;
 
@@ -144,7 +142,7 @@ class Message extends StatefulWidget {
 
   /// Called when user makes a long press on any message.
   /// [FORK-MODIFICATION]: add borderRadius & mounted for Popover widget.
-  final void Function(BuildContext context, types.Message, BorderRadiusGeometry borderRadius, bool Function()? mounted)? onMessageLongPress;
+  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius, bool Function()? mounted)? onMessageLongPress;
 
   /// Called when user makes a long press on status icon in any message.
   final void Function(BuildContext context, types.Message)?
@@ -177,9 +175,6 @@ class Message extends StatefulWidget {
 
   /// Show user avatars for received messages. Useful for a group chat.
   final bool showUserAvatars;
-
-  /// See [TextMessage.customPatterns].
-  final List<MatchText> customPatterns;
 
   /// See [TextMessage.userAgent].
   final String? userAgent;
@@ -285,6 +280,7 @@ class _MessageState extends State<Message> {
                 onPreviewDataFetched: widget.onPreviewDataFetched,
                 options: widget.textMessageOptions,
                 showName: widget.showName,
+                customEmojiWidget: widget.customEmojiWidget,
                 usePreviewData: widget.usePreviewData,
                 userAgent: widget.userAgent,
               );
@@ -371,7 +367,16 @@ class _MessageState extends State<Message> {
                 Builder(
                   builder: (BuildContext innerContext) => GestureDetector( // HOTFIX: handle actions on bubble itself.
                     onDoubleTap: () => widget.onMessageDoubleTap?.call(innerContext, widget.message),
-                    onLongPress: () => widget.onMessageLongPress?.call(innerContext, widget.message, borderRadius, () => mounted),
+                    onLongPress: () => widget.onMessageLongPress?.call(innerContext, widget.message, BorderRadiusDirectional.only(
+                      bottomEnd: Radius.circular(
+                        !currentUserIsAuthor || widget.roundBorder ? messageBorderRadius : 0,
+                      ),
+                      bottomStart: Radius.circular(
+                        currentUserIsAuthor || widget.roundBorder ? messageBorderRadius : 0,
+                      ),
+                      topEnd: Radius.circular(messageBorderRadius),
+                      topStart: Radius.circular(messageBorderRadius),
+                    ), () => mounted,),
                     onTap: () => widget.onMessageTap?.call(innerContext, widget.message),
                     child: widget.onMessageVisibilityChanged != null
                       ? VisibilityDetector(

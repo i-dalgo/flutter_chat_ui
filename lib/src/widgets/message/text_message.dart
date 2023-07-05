@@ -23,6 +23,7 @@ class TextMessage extends StatelessWidget {
     this.nameBuilder,
     this.onPreviewDataFetched,
     this.options = const TextMessageOptions(),
+    this.customEmojiWidget,
     required this.showName,
     required this.usePreviewData,
     this.userAgent,
@@ -47,6 +48,10 @@ class TextMessage extends StatelessWidget {
 
   /// Customisation options for the [TextMessage].
   final TextMessageOptions options;
+
+  /// [FORK-MODIFICATION]: Build a custom emoji widget.
+  final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
+      customEmojiWidget;
 
   /// Show user name for the received message. Useful for a group chat.
   final bool showName;
@@ -130,7 +135,9 @@ class TextMessage extends StatelessWidget {
         if (showName)
           nameBuilder?.call(message.author) ?? UserName(author: message.author),
         if (enlargeEmojis)
-          if (options.isTextSelectable)
+          if (customEmojiWidget != null)
+            customEmojiWidget!(message, emojiTextStyle: emojiTextStyle)
+          else if (options.isTextSelectable)
             SelectableText(message.text, style: emojiTextStyle)
           else
             Text(message.text, style: emojiTextStyle)

@@ -24,13 +24,11 @@ class TextMessage extends StatelessWidget {
     required this.hideBackgroundOnEmojiMessages,
     required this.isTextMessageTextSelectable,
     required this.message,
-    this.customEmojiWidget,
     this.nameBuilder,
     this.onPreviewDataFetched,
     this.options = const TextMessageOptions(),
     required this.usePreviewData,
     required this.showName,
-    required this.customPatterns,
   });
 
   /// See [Message.emojiEnlargementBehavior].
@@ -38,10 +36,6 @@ class TextMessage extends StatelessWidget {
 
   /// See [Message.hideBackgroundOnEmojiMessages].
   final bool hideBackgroundOnEmojiMessages;
-
-  /// See [Message.customEmojiWidget].
-  final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
-      customEmojiWidget;
 
   /// Whether user can tap and hold to select a text content.
   final bool isTextMessageTextSelectable;
@@ -66,9 +60,6 @@ class TextMessage extends StatelessWidget {
 
   /// Enables link (URL) preview.
   final bool usePreviewData;
-
-  // Enables custom patterns.
-  final List<MatchText> customPatterns;
 
   /// Allows you to add a Tag next to author's name.
   final Widget Function(BuildContext context)? customHeaderTag;
@@ -146,16 +137,13 @@ class TextMessage extends StatelessWidget {
           nameBuilder?.call(message.author.id) ??
               UserName(author: message.author, customHeaderTag: customHeaderTag),
         if (enlargeEmojis)
-          if (customEmojiWidget != null)
-            customEmojiWidget!(message, emojiTextStyle: emojiTextStyle)
-          else if (isTextMessageTextSelectable)
+          if (isTextMessageTextSelectable)
             SelectableText(message.text, style: emojiTextStyle)
           else
             Text(message.text, style: emojiTextStyle)
         else
           ParsedText(
             parse: [
-              ...customPatterns,
               MatchText(
                 onTap: (mail) async {
                   final url = Uri(scheme: 'mailto', path: mail);
