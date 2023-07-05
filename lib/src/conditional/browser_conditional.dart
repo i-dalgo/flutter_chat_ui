@@ -1,5 +1,7 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+
 import 'base_conditional.dart';
 
 /// Create a [BrowserConditional].
@@ -7,21 +9,21 @@ import 'base_conditional.dart';
 /// Used from conditional imports, matches the definition in `conditional_stub.dart`.
 BaseConditional createConditional() => BrowserConditional();
 
-/// A conditional for browser
+/// A conditional for browser.
 class BrowserConditional extends BaseConditional {
   /// Returns [NetworkImage] if URI starts with http
-  /// otherwise returns transparent image
+  /// otherwise returns transparent image.
   @override
-  ImageProvider getProvider(String uri) {
+  ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
     if (uri.startsWith('http') || uri.startsWith('blob')) {
-      return NetworkImage(uri);
+      return NetworkImage(uri, headers: headers);
     } else {
       return MemoryImage(kTransparentImage);
     }
   }
 }
 
-/// Transparent image data
+/// Transparent image data.
 final kTransparentImage = Uint8List.fromList(
   <int>[
     0x89,

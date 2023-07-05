@@ -1,3 +1,71 @@
+## 1.6.8
+
+- Downgrade `intl` to make it compatible with latest Flutter
+- Add `autofocus` to the `InputOptions`. Thanks @josefwilhelm for the PR!
+
+## 1.6.7
+
+- **BREAKING CHANGE**: `nameBuilder` now passes the whole user class, instead of just an id. Thanks @vintage for the PR!
+- Add typing indicator. See `typingIndicatorOptions`. Thanks @gtalha07 for the PR! Huge one!
+- Add `imageProviderBuilder`. Thanks @marinkobabic for the PR!
+- Add `autocorrect` and `enableSuggestions` to the `InputOptions`. By default, both values will be true. Thanks @g0dzillaa for the PR!
+- Add `keyboardType` to the `InputOptions`. Thanks @Gramatton for the PR!
+- Add Swedish localization. Thanks @OlleEkberg for the PR!
+- Add Finnish localization. Thanks @tuoku for the PR!
+- Update dependencies. Requires Dart >= 2.19.0.
+
+## 1.6.6
+
+- Add `audioMessageBuilder` (no default implementation yet). Thanks @marinkobabic for the PR!
+- Add `videoMessageBuilder` (no default implementation yet).
+- Add `SystemMessage` and `systemMessageBuilder`. Thanks @felixgabler for the PR!
+- Add `dateIsUtc` to use UTC time for parsing dates inside the chat. Thanks @marinkobabic for the PR!
+- Fix unnecessary scrolls to the bottom. Thanks @MaddinMade for the PR!
+- Add custom text matchers to the `TextMessageOptions`. Thanks @jld3103 for the PR!
+- Add `listBottomWidget`. Thanks @MaddinMade for the PR!
+- Fix scroll to unread when no unread messages exist. Thans @jld3103 for the PR!
+- Add `useTopSafeAreaInset` to the `Chat` widget, by default enabled on mobile platforms. Use it to disable top safe area inset. Thanks @jld3103 for reporting!
+- Fix PatternStyle regexes. Thanks @Mayb3Nots for reporting!
+- Update dependencies. Requires Dart >= 2.18.0.
+
+## 1.6.5
+
+- **BREAKING CHANGE**: `PreviewTapOptions` -> `TextMessageOptions`
+- **BREAKING CHANGE**: `isTextMessageTextSelectable` -> `TextMessageOptions.isTextSelectable`
+- Add unread messages banner and scroll to the first unread. Thanks @felixgabler for the PR!
+- Fix every message re-render on new message added. Thanks @otto-dev for the PR!
+- Refactor code to make Flyer chat more accessible for contributions. Thanks @felixgabler for the PR!
+- Add `imageHeaders`. Allows to pass headers to all images used in the chat. Thanks @marinkobabic for the PR!
+- Update to Flutter 3.3.3
+
+## 1.6.4
+
+- **BREAKING CHANGE**: Add `InputOptions`. `onTextChanged`, `onTextFieldTap` and `sendButtonVisibilityMode` are now under `InputOptions` class, just move the same values to `inputOptions: InputOptions()`.
+- Add `inputClearMode` to `InputOptions`. Allows you to disable automatic text field clear on submit.
+- Add `textEditingController` to `InputOptions`. Allows you to provide a custom editing contoller, but preferably use `InputTextFieldController` we export from the library, if you want to use it to programmatically clear text field or similar.
+- Add `keyboardDismissBehavior`.
+- Improve image gallery - code optimizations and close button fix. Thanks @felixgabler for the PR!
+- Fix input container changing its size. Thanks @joj3000 for the PR!
+- Fix enter key not moving text to a new line on web. Thanks @UmairSaqibBhutta for reporting!
+- Add `TextMessageOptions`. Thanks @felixgabler for the PR!
+- Update dependencies
+
+## 1.6.3
+
+- Added an option to align sent bubbles to the right or left for RTL languages. Thanks @Faaatman for reporting! Use `bubbleRtlAlignment`.
+- Add `customStatusBuilder`. Thanks @skllll06 for the PR!
+
+## 1.6.2
+
+- Code refactor
+- Update documentation about opening files
+- Fixes RTL layout. Thanks @Yahllil for reporting!
+
+## 1.6.1
+
+- Add bold, italic, strikethrough & code style to the input. Thanks @hareshgediya for the PR!
+- Add user agent option for preview data fetching. Thanks @felixgabler for the PR!
+
 ## 1.6.0
 
 - **BREAKING CHANGE**: `copyWith` on messages works differently (keeping previous values unless set to null), and sometimes casting to a specific message type is required. Please check your codebase if you're using it. Thanks!

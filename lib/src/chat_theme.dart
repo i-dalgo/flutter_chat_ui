@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'widgets/message/system_message.dart';
+import 'widgets/typing_indicator.dart';
+import 'widgets/unread_header.dart';
+
 // For internal usage only. Use values from theme itself.
 
-/// See [ChatTheme.userAvatarNameColors]
+/// See [ChatTheme.userAvatarNameColors].
 const colors = [
   Color(0xffff6767),
   Color(0xff66e0da),
@@ -16,31 +20,34 @@ const colors = [
   Color(0xffc78ae5),
 ];
 
-/// Dark
+/// Dark.
 const dark = Color(0xff1f1c38);
 
-/// Error
+/// Error.
 const error = Color(0xffff6767);
 
-/// N0
+/// N0.
 const neutral0 = Color(0xff1d1c21);
 
-/// N2
+/// N1.
+const neutral1 = Color(0xff615e6e);
+
+/// N2.
 const neutral2 = Color(0xff9e9cab);
 
-/// N7
+/// N7.
 const neutral7 = Color(0xffffffff);
 
-/// N7 with opacity
+/// N7 with opacity.
 const neutral7WithOpacity = Color(0x80ffffff);
 
-/// Primary
+/// Primary.
 const primary = Color(0xff6f61e8);
 
-/// Secondary
+/// Secondary.
 const secondary = Color(0xfff5f5f7);
 
-/// Secondary dark
+/// Secondary dark.
 const secondaryDark = Color(0xff2b2250);
 
 /// Base chat theme containing all required properties to make a theme.
@@ -64,8 +71,6 @@ abstract class ChatTheme {
     this.inputContainerDecoration,
     required this.inputMargin,
     required this.inputPadding,
-    required this.inputInsetsHorizontal,
-    required this.inputInsetsVertical,
     required this.inputTextColor,
     this.inputTextCursorColor,
     required this.inputTextDecoration,
@@ -86,7 +91,6 @@ abstract class ChatTheme {
     required this.secondaryColor,
     required this.seenIcon,
     required this.sendButtonIcon,
-    this.sendButtonIconSize,
     required this.sendButtonMargin,
     required this.sendingIcon,
     required this.sentEmojiMessageTextStyle,
@@ -99,89 +103,86 @@ abstract class ChatTheme {
     required this.sentMessageLinkDescriptionTextStyle,
     required this.sentMessageLinkTitleTextStyle,
     required this.statusIconPadding,
+    required this.systemMessageTheme,
+    required this.typingIndicatorTheme,
+    required this.unreadHeaderTheme,
     required this.userAvatarImageBackgroundColor,
     required this.userAvatarNameColors,
     required this.userAvatarTextStyle,
     required this.userNameTextStyle,
   });
 
-  /// Icon for select attachment button
+  /// Icon for select attachment button.
   final Widget? attachmentButtonIcon;
 
-  /// Margin of attachment button
+  /// Margin of attachment button.
   final EdgeInsets? attachmentButtonMargin;
 
-  /// Used as a background color of a chat widget
+  /// Used as a background color of a chat widget.
   final Color backgroundColor;
 
-  /// Margin around date dividers
+  /// Margin around date dividers.
   final EdgeInsets dateDividerMargin;
 
-  /// Text style of the date dividers
+  /// Text style of the date dividers.
   final TextStyle dateDividerTextStyle;
 
   /// Icon for message's `delivered` status. For the best look use size of 16.
   final Widget? deliveredIcon;
 
-  /// Icon inside file message
+  /// Icon inside file message.
   final Widget? documentIcon;
 
-  /// Text style of the empty chat placeholder
+  /// Text style of the empty chat placeholder.
   final TextStyle emptyChatPlaceholderTextStyle;
 
-  /// Color to indicate something bad happened (usually - shades of red)
+  /// Color to indicate something bad happened (usually - shades of red).
   final Color errorColor;
 
   /// Icon for message's `error` status. For the best look use size of 16.
   final Widget? errorIcon;
 
-  /// Color of the bottom bar where text field is
+  /// Color of the bottom bar where text field is.
   final Color inputBackgroundColor;
 
-  /// Top border radius of the bottom bar where text field is
+  /// Top border radius of the bottom bar where text field is.
   final BorderRadius inputBorderRadius;
 
-  /// Decoration of the container wrapping the text field
+  /// Decoration of the container wrapping the text field.
   final Decoration? inputContainerDecoration;
 
-  /// Outer insets of the bottom bar where text field is
+  /// Outer insets of the bottom bar where text field is.
   final EdgeInsets inputMargin;
 
-  /// Inner insets of the bottom bar where text field is
+  /// Inner insets of the bottom bar where text field is.
   final EdgeInsets inputPadding;
 
-  /// Horizontal input insets
-  final double inputInsetsHorizontal;
-
-  /// Horizontal input insets
-  final double inputInsetsVertical;
-
-  /// Color of the text field's text and attachment/send buttons
+  /// Color of the text field's text and attachment/send buttons.
   final Color inputTextColor;
 
-  /// Color of the text field's cursor
+  /// Color of the text field's cursor.
   final Color? inputTextCursorColor;
 
-  /// Decoration of the input text field
+  /// Decoration of the input text field.
   final InputDecoration inputTextDecoration;
 
   /// Text style of the message input. To change the color use [inputTextColor].
   final TextStyle inputTextStyle;
 
-  /// Border radius of message container
+  /// Border radius of message container.
   final double messageBorderRadius;
 
-  /// Horizontal message bubble insets
+  /// Horizontal message bubble insets.
   final double messageInsetsHorizontal;
 
-  /// Vertical message bubble insets
+  /// Vertical message bubble insets.
   final double messageInsetsVertical;
 
   /// Primary color of the chat used as a background of sent messages
-  /// and statuses
+  /// and statuses.
   final Color primaryColor;
 
-  /// Text style used for displaying emojis on text messages
+  /// Text style used for displaying emojis on text messages.
   final TextStyle receivedEmojiMessageTextStyle;
 
   /// Body text style used for displaying bold text on received text messages.
@@ -193,46 +194,42 @@ abstract class ChatTheme {
   final TextStyle? receivedMessageBodyCodeTextStyle;
 
   /// Text style used for displaying link text on received text messages.
-  /// Defaults to [receivedMessageBodyTextStyle]
+  /// Defaults to [receivedMessageBodyTextStyle].
   final TextStyle? receivedMessageBodyLinkTextStyle;
 
   /// Body text style used for displaying text on different types
-  /// of received messages
+  /// of received messages.
   final TextStyle receivedMessageBodyTextStyle;
 
-  /// Caption text style used for displaying secondary info (e.g. file size)
-  /// on different types of received messages
+  /// Caption text style used for displaying secondary info (e.g. file size) on different types of received messages.
   final TextStyle receivedMessageCaptionTextStyle;
 
   /// Color of the document icon on received messages. Has no effect when
   /// [documentIcon] is used.
   final Color receivedMessageDocumentIconColor;
 
-  /// Text style used for displaying link description on received messages
+  /// Text style used for displaying link description on received messages.
   final TextStyle receivedMessageLinkDescriptionTextStyle;
 
-  /// Text style used for displaying link title on received messages
+  /// Text style used for displaying link title on received messages.
   final TextStyle receivedMessageLinkTitleTextStyle;
 
-  /// Secondary color, used as a background of received messages
+  /// Secondary color, used as a background of received messages.
   final Color secondaryColor;
 
   /// Icon for message's `seen` status. For the best look use size of 16.
   final Widget? seenIcon;
 
-  /// Icon for send button
+  /// Icon for send button.
   final Widget? sendButtonIcon;
 
-  /// Size of send button
-  final double? sendButtonIconSize;
-
-  /// Margin of send button
+  /// Margin of send button.
   final EdgeInsets? sendButtonMargin;
 
   /// Icon for message's `sending` status. For the best look use size of 10.
   final Widget? sendingIcon;
 
-  /// Text style used for displaying emojis on text messages
+  /// Text style used for displaying emojis on text messages.
   final TextStyle sentEmojiMessageTextStyle;
 
   /// Body text style used for displaying bold text on sent text messages.
@@ -244,29 +241,38 @@ abstract class ChatTheme {
   final TextStyle? sentMessageBodyCodeTextStyle;
 
   /// Text style used for displaying link text on sent text messages.
-  /// Defaults to [sentMessageBodyTextStyle]
+  /// Defaults to [sentMessageBodyTextStyle].
   final TextStyle? sentMessageBodyLinkTextStyle;
 
   /// Body text style used for displaying text on different types
-  /// of sent messages
+  /// of sent messages.
   final TextStyle sentMessageBodyTextStyle;
 
-  /// Caption text style used for displaying secondary info (e.g. file size)
-  /// on different types of sent messages
+  /// Caption text style used for displaying secondary info (e.g. file size) on different types of sent messages.
   final TextStyle sentMessageCaptionTextStyle;
 
   /// Color of the document icon on sent messages. Has no effect when
   /// [documentIcon] is used.
   final Color sentMessageDocumentIconColor;
 
-  /// Text style used for displaying link description on sent messages
+  /// Text style used for displaying link description on sent messages.
   final TextStyle sentMessageLinkDescriptionTextStyle;
 
-  /// Text style used for displaying link title on sent messages
+  /// Text style used for displaying link title on sent messages.
   final TextStyle sentMessageLinkTitleTextStyle;
 
-  /// Padding around status icons
+  /// Padding around status icons.
   final EdgeInsets statusIconPadding;
+
+  /// Theme for the system message. Will not have an effect if a custom builder
+  /// is provided.
+  final SystemMessageTheme systemMessageTheme;
+
+  /// Theme for typing indicator. See [TypingIndicator].
+  final TypingIndicatorTheme typingIndicatorTheme;
+
+  /// Theme for the unread header.
+  final UnreadHeaderTheme unreadHeaderTheme;
 
   /// Color used as a background for user avatar if an image is provided.
   /// Visible if the image has some transparent parts.
@@ -278,19 +284,19 @@ abstract class ChatTheme {
   final List<Color> userAvatarNameColors;
 
   /// Text style used for displaying initials on user avatar if no
-  /// image is provided
+  /// image is provided.
   final TextStyle userAvatarTextStyle;
 
   /// User names text style. Color will be overwritten with [userAvatarNameColors].
   final TextStyle userNameTextStyle;
 }
 
-/// Default chat theme which extends [ChatTheme]
+/// Default chat theme which extends [ChatTheme].
 @immutable
 class DefaultChatTheme extends ChatTheme {
   /// Creates a default chat theme. Use this constructor if you want to
   /// override only a couple of properties, otherwise create a new class
-  /// which extends [ChatTheme]
+  /// which extends [ChatTheme].
   const DefaultChatTheme({
     super.attachmentButtonIcon,
     super.attachmentButtonMargin,
@@ -319,8 +325,6 @@ class DefaultChatTheme extends ChatTheme {
     super.inputBorderRadius = const BorderRadius.vertical(
       top: Radius.circular(20),
     ),
-    super.inputInsetsHorizontal = 24,
-    super.inputInsetsVertical = 20,
     super.inputContainerDecoration,
     super.inputMargin = EdgeInsets.zero,
     super.inputPadding = const EdgeInsets.fromLTRB(24, 20, 24, 20),
@@ -372,7 +376,6 @@ class DefaultChatTheme extends ChatTheme {
     super.secondaryColor = secondary,
     super.seenIcon,
     super.sendButtonIcon,
-    super.sendButtonIconSize,
     super.sendButtonMargin,
     super.sendingIcon,
     super.sentEmojiMessageTextStyle = const TextStyle(fontSize: 40),
@@ -405,6 +408,42 @@ class DefaultChatTheme extends ChatTheme {
       height: 1.375,
     ),
     super.statusIconPadding = const EdgeInsets.symmetric(horizontal: 4),
+    super.systemMessageTheme = const SystemMessageTheme(
+      margin: EdgeInsets.only(
+        bottom: 24,
+        top: 8,
+        left: 8,
+        right: 8,
+      ),
+      textStyle: TextStyle(
+        color: neutral2,
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+        height: 1.333,
+      ),
+    ),
+    super.typingIndicatorTheme = const TypingIndicatorTheme(
+      animatedCirclesColor: neutral1,
+      animatedCircleSize: 5.0,
+      bubbleBorder: BorderRadius.all(Radius.circular(27.0)),
+      bubbleColor: neutral7,
+      countAvatarColor: primary,
+      countTextColor: secondary,
+      multipleUserTextStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: neutral2,
+      ),
+    ),
+    super.unreadHeaderTheme = const UnreadHeaderTheme(
+      color: secondary,
+      textStyle: TextStyle(
+        color: neutral2,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        height: 1.333,
+      ),
+    ),
     super.userAvatarImageBackgroundColor = Colors.transparent,
     super.userAvatarNameColors = colors,
     super.userAvatarTextStyle = const TextStyle(
@@ -421,12 +460,12 @@ class DefaultChatTheme extends ChatTheme {
   });
 }
 
-/// Dark chat theme which extends [ChatTheme]
+/// Dark chat theme which extends [ChatTheme].
 @immutable
 class DarkChatTheme extends ChatTheme {
   /// Creates a dark chat theme. Use this constructor if you want to
   /// override only a couple of properties, otherwise create a new class
-  /// which extends [ChatTheme]
+  /// which extends [ChatTheme].
   const DarkChatTheme({
     super.attachmentButtonIcon,
     super.attachmentButtonMargin,
@@ -455,8 +494,6 @@ class DarkChatTheme extends ChatTheme {
     super.inputBorderRadius = const BorderRadius.vertical(
       top: Radius.circular(20),
     ),
-    super.inputInsetsHorizontal = 24,
-    super.inputInsetsVertical = 20,
     super.inputContainerDecoration,
     super.inputMargin = EdgeInsets.zero,
     super.inputPadding = const EdgeInsets.fromLTRB(24, 20, 24, 20),
@@ -509,7 +546,6 @@ class DarkChatTheme extends ChatTheme {
     super.seenIcon,
     super.sendButtonIcon,
     super.sendButtonMargin,
-    super.sendButtonIconSize,
     super.sendingIcon,
     super.sentEmojiMessageTextStyle = const TextStyle(fontSize: 40),
     super.sentMessageBodyBoldTextStyle,
@@ -541,6 +577,42 @@ class DarkChatTheme extends ChatTheme {
       height: 1.375,
     ),
     super.statusIconPadding = const EdgeInsets.symmetric(horizontal: 4),
+    super.systemMessageTheme = const SystemMessageTheme(
+      margin: EdgeInsets.only(
+        bottom: 24,
+        top: 8,
+        left: 8,
+        right: 8,
+      ),
+      textStyle: TextStyle(
+        color: neutral7,
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+        height: 1.333,
+      ),
+    ),
+    super.typingIndicatorTheme = const TypingIndicatorTheme(
+      animatedCirclesColor: neutral7,
+      animatedCircleSize: 5.0,
+      bubbleBorder: BorderRadius.all(Radius.circular(27.0)),
+      bubbleColor: dark,
+      countAvatarColor: primary,
+      countTextColor: secondary,
+      multipleUserTextStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: neutral2,
+      ),
+    ),
+    super.unreadHeaderTheme = const UnreadHeaderTheme(
+      color: secondaryDark,
+      textStyle: TextStyle(
+        color: neutral7WithOpacity,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        height: 1.333,
+      ),
+    ),
     super.userAvatarImageBackgroundColor = Colors.transparent,
     super.userAvatarNameColors = colors,
     super.userAvatarTextStyle = const TextStyle(

@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'inherited_chat_theme.dart';
-import 'inherited_l10n.dart';
 
-/// A class that represents send button widget
+import 'state/inherited_chat_theme.dart';
+import 'state/inherited_l10n.dart';
+
+/// A class that represents send button widget.
 class SendButton extends StatelessWidget {
-  /// Creates send button widget
+  /// Creates send button widget.
   const SendButton({
     super.key,
     required this.onPressed,
     this.padding = EdgeInsets.zero,
   });
 
-  /// Callback for send button tap event
+  /// Callback for send button tap event.
   final void Function() onPressed;
 
-  /// Padding around the button
+  /// Padding around the button.
   final EdgeInsets padding;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: InheritedChatTheme.of(context).theme.sendButtonIconSize ?? 28,
-      width: InheritedChatTheme.of(context).theme.sendButtonIconSize ?? 28,
+  Widget build(BuildContext context) => Container(
+      height: 28,
+      width: 28,
       margin: InheritedChatTheme.of(context).theme.sendButtonMargin ??
           const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
       child: IconButton(
@@ -38,5 +38,4 @@ class SendButton extends StatelessWidget {
         tooltip: InheritedL10n.of(context).l10n.sendButtonAccessibilityLabel,
       ),
     );
-  }
 }

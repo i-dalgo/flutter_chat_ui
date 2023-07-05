@@ -1,52 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-import '../conditional/conditional.dart';
-import '../util.dart';
-import 'inherited_chat_theme.dart';
-import 'inherited_user.dart';
+import '../../conditional/conditional.dart';
+import '../../util.dart';
+import '../state/inherited_chat_theme.dart';
+import '../state/inherited_user.dart';
 
 /// A class that represents image message widget. Supports different
 /// aspect ratios, renders blurred image as a background which is visible
 /// if the image is narrow, renders image in form of a file if aspect
 /// ratio is very small or very big.
 class ImageMessage extends StatefulWidget {
-  /// Creates an image message widget based on [types.ImageMessage]
+  /// Creates an image message widget based on [types.ImageMessage].
   const ImageMessage({
     super.key,
+    this.imageHeaders,
+    this.imageProviderBuilder,
     required this.message,
     required this.messageWidth,
   });
 
-  /// [types.ImageMessage]
+  /// See [Chat.imageHeaders].
+  final Map<String, String>? imageHeaders;
+
+  /// See [Chat.imageProviderBuilder].
+  final ImageProvider Function({
+    required String uri,
+    required Map<String, String>? imageHeaders,
+    required Conditional conditional,
+  })? imageProviderBuilder;
+
+  /// [types.ImageMessage].
   final types.ImageMessage message;
 
-  /// Maximum message width
+  /// Maximum message width.
   final int messageWidth;
 
   @override
   State<ImageMessage> createState() => _ImageMessageState();
 }
 
-/// [ImageMessage] widget state
+/// [ImageMessage] widget state.
 class _ImageMessageState extends State<ImageMessage> {
   ImageProvider? _image;
+  Size _size = Size.zero;
   ImageStream? _stream;
-  Size _size = const Size(0, 0);
 
   @override
   void initState() {
     super.initState();
-    _image = Conditional().getProvider(widget.message.uri);
+    _image = widget.imageProviderBuilder != null
+        ? widget.imageProviderBuilder!(
+            uri: widget.message.uri,
+            imageHeaders: widget.imageHeaders,
+            conditional: Conditional(),
+          )
+        : Conditional().getProvider(
+            widget.message.uri,
+            headers: widget.imageHeaders,
+          );
     _size = Size(widget.message.width ?? 0, widget.message.height ?? 0);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_size.isEmpty) {
-      _getImage();
-    }
   }
 
   void _getImage() {
@@ -67,6 +80,14 @@ class _ImageMessageState extends State<ImageMessage> {
         info.image.height.toDouble(),
       );
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_size.isEmpty) {
+      _getImage();
+    }
   }
 
   @override
