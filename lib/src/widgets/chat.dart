@@ -80,6 +80,7 @@ class Chat extends StatefulWidget {
     this.usePreviewData = true,
     this.customFeedback,
     this.customPatterns = const [],
+    this.customEmojiWidget,
     required this.user,
   });
 
@@ -112,6 +113,10 @@ class Chat extends StatefulWidget {
   /// See [Message.customMessageBuilder]
   final Widget Function(types.CustomMessage, {required int messageWidth})?
       customMessageBuilder;
+
+  /// See [Message.customEmojiWidget]
+  final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
+      customEmojiWidget;
 
   /// See [TextMessage.customHeaderTag]
   final Widget Function(BuildContext context)? customHeaderTag;
@@ -415,6 +420,7 @@ class _ChatState extends State<Chat> {
         avatarBuilder: widget.avatarBuilder,
         bubbleBuilder: widget.bubbleBuilder,
         customMessageBuilder: widget.customMessageBuilder,
+        customEmojiWidget: widget.customEmojiWidget,
         customHeaderTag: widget.customHeaderTag,
         emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
         fileMessageBuilder: widget.fileMessageBuilder,

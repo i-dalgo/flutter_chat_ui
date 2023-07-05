@@ -22,6 +22,7 @@ class TextMessage extends StatelessWidget {
     required this.hideBackgroundOnEmojiMessages,
     required this.isTextMessageTextSelectable,
     required this.message,
+    this.customEmojiWidget,
     this.nameBuilder,
     this.onPreviewDataFetched,
     required this.previewTapOptions,
@@ -35,6 +36,10 @@ class TextMessage extends StatelessWidget {
 
   /// See [Message.hideBackgroundOnEmojiMessages]
   final bool hideBackgroundOnEmojiMessages;
+
+  /// See [Message.customEmojiWidget]
+  final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
+      customEmojiWidget;
 
   /// Whether user can tap and hold to select a text content
   final bool isTextMessageTextSelectable;
@@ -138,7 +143,9 @@ class TextMessage extends StatelessWidget {
           nameBuilder?.call(message.author.id) ??
               UserName(author: message.author, customHeaderTag: customHeaderTag),
         if (enlargeEmojis)
-          if (isTextMessageTextSelectable)
+          if (customEmojiWidget != null)
+            customEmojiWidget!(message, emojiTextStyle: emojiTextStyle)
+          else if (isTextMessageTextSelectable)
             SelectableText(message.text, style: emojiTextStyle)
           else
             Text(message.text, style: emojiTextStyle)

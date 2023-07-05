@@ -26,6 +26,7 @@ class Message extends StatefulWidget {
     this.avatarBuilder,
     this.bubbleBuilder,
     this.customMessageBuilder,
+    this.customEmojiWidget,
     this.customHeaderTag,
     required this.emojiEnlargementBehavior,
     this.fileMessageBuilder,
@@ -72,6 +73,10 @@ class Message extends StatefulWidget {
   /// Build a custom message inside predefined bubble
   final Widget Function(types.CustomMessage, {required int messageWidth})?
       customMessageBuilder;
+
+  /// Build a custom emoji widget
+  final Widget Function(types.TextMessage, {required TextStyle emojiTextStyle})?
+      customEmojiWidget;
 
   /// See [TextMessage.customHeaderTag]
   final Widget Function(BuildContext context)? customHeaderTag;
@@ -228,6 +233,7 @@ class _MessageState extends State<Message> {
             : TextMessage(
                 emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
                 hideBackgroundOnEmojiMessages: widget.hideBackgroundOnEmojiMessages,
+                customEmojiWidget: widget.customEmojiWidget,
                 isTextMessageTextSelectable: widget.isTextMessageTextSelectable,
                 message: textMessage,
                 customHeaderTag: widget.customHeaderTag,
