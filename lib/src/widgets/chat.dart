@@ -96,10 +96,12 @@ class Chat extends StatefulWidget {
     this.usePreviewData = true,
     this.customFeedback,
     this.customEmojiWidget,
+    this.customStickerBuilder,
     required this.user,
     this.userAgent,
     this.useTopSafeAreaInset,
     this.videoMessageBuilder,
+    this.customEmojiButton,
   });
 
   /// See [Message.audioMessageBuilder].
@@ -122,6 +124,9 @@ class Chat extends StatefulWidget {
   /// Allows you to replace the default Input widget e.g. if you want to create a channel view. If you're looking for the bottom widget added to the chat list, see [listBottomWidget] instead.
   final Widget? customBottomWidget;
 
+  /// [FORK-MODIFICATION].
+  final Widget Function(FocusNode focusNode)? customEmojiButton;
+
   /// [FORK-MODIFICATION] Allows you to replace the default feedback widget.
   final Widget? customFeedback;
 
@@ -142,6 +147,10 @@ class Chat extends StatefulWidget {
   /// See [Message.customStatusBuilder].
   final Widget Function(types.Message message, {required BuildContext context})?
       customStatusBuilder;
+
+  // [FORK-MODIFICATION] add a zone to display stickers / emojis / gifs.
+  final Widget Function()?
+      customStickerBuilder;
 
   /// Allows you to customize the date format. IMPORTANT: only for the date, do not return time here. See [timeFormat] to customize the time format. [dateLocale] will be ignored if you use this, so if you want a localized date make sure you initialize your [DateFormat] with a locale. See [customDateHeaderText] for more customization.
   final DateFormat? dateFormat;
@@ -652,6 +661,8 @@ class ChatState extends State<Chat> {
                           Input(
                             isAttachmentUploading: widget.isAttachmentUploading,
                             onAttachmentPressed: widget.onAttachmentPressed,
+                            customEmojiButton: widget.customEmojiButton,
+                            customStickerBuilder: widget.customStickerBuilder,
                             onSendPressed: widget.onSendPressed,
                             options: widget.inputOptions,
                           ),

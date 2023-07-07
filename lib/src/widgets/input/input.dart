@@ -19,6 +19,8 @@ class Input extends StatefulWidget {
     super.key,
     this.isAttachmentUploading,
     this.onAttachmentPressed,
+    this.customEmojiButton,
+    this.customStickerBuilder,
     required this.onSendPressed,
     this.options = const InputOptions(),
   });
@@ -31,6 +33,13 @@ class Input extends StatefulWidget {
 
   /// See [AttachmentButton.onPressed].
   final VoidCallback? onAttachmentPressed;
+
+  /// [FORK-MODIFICATION].
+  final Widget Function(FocusNode focusNode)? customEmojiButton;
+
+  // [FORK-MODIFICATION] add a zone to display stickers / emojis / gifs.
+  final Widget Function()?
+      customStickerBuilder;
 
   /// Will be called on [SendButton] tap. Has [types.PartialText] which can
   /// be transformed to [types.TextMessage] and added to the messages list.
@@ -114,7 +123,7 @@ class _InputState extends State<Input> {
         .theme
         .inputPadding
         .copyWith(left: 16, right: 16);
-    final safeAreaInsets = isMobile
+    final safeAreaInsets = isMobile && widget.options.enabledSafeAreaInsets
         ? EdgeInsets.fromLTRB(
             query.padding.left,
             0,
@@ -141,7 +150,7 @@ class _InputState extends State<Input> {
         padding: InheritedChatTheme.of(context).theme.inputMargin.copyWith(right: _sendButtonVisible ? 12 : 0),
         child: Material(
           borderRadius: InheritedChatTheme.of(context).theme.inputBorderRadius,
-          color: InheritedChatTheme.of(context).theme.inputBackgroundColor,
+          color: widget.options.enabledSafeAreaInsets ? InheritedChatTheme.of(context).theme.inputBackgroundColor : Colors.transparent,
           child: Container(
             decoration:
                 InheritedChatTheme.of(context).theme.inputContainerDecoration,
@@ -186,7 +195,7 @@ class _InputState extends State<Input> {
                                           color: InheritedChatTheme.of(context)
                                               .theme
                                               .inputTextColor
-                                              .withOpacity(0.5),
+                                              .withOpacity(0.3),
                                         ),
                                     hintText:
                                         InheritedL10n.of(context).l10n.inputPlaceholder,
@@ -208,6 +217,11 @@ class _InputState extends State<Input> {
                               textCapitalization: TextCapitalization.sentences,
                             ),
                           ),
+                          if (widget.customEmojiButton != null)
+                            Visibility(
+                              visible: !_sendButtonVisible,
+                              child: widget.customEmojiButton!(_inputFocusNode),
+                            ),
                           Visibility(
                             visible: _sendButtonVisible,
                             child: SendButton(
@@ -246,7 +260,13 @@ class _InputState extends State<Input> {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () => _inputFocusNode.requestFocus(),
-        child: _inputBuilder(),
+        child: Column(
+            children: [
+                _inputBuilder(),
+                if (widget.customStickerBuilder != null)
+                    widget.customStickerBuilder!(),
+            ],
+        ),
       );
 }
 
@@ -263,6 +283,7 @@ class InputOptions {
     this.autofocus = false,
     this.enableSuggestions = true,
     this.enabled = true,
+    this.enabledSafeAreaInsets = true,
   });
 
   /// Controls the [Input] clear behavior. Defaults to [InputClearMode.always].
@@ -301,4 +322,7 @@ class InputOptions {
 
   /// Controls the [TextInput] enabled behavior. Defaults to [true].
   final bool enabled;
+
+  /// Controls the safeAreaInsets behavior.
+  final bool enabledSafeAreaInsets;
 }
