@@ -38,7 +38,7 @@ class Input extends StatefulWidget {
   final Widget Function(FocusNode focusNode)? customEmojiButton;
 
   // [FORK-MODIFICATION] add a zone to display stickers / emojis / gifs.
-  final Widget Function()?
+  final Widget Function(FocusNode focusNode)?
       customStickerBuilder;
 
   /// Will be called on [SendButton] tap. Has [types.PartialText] which can
@@ -264,7 +264,7 @@ class _InputState extends State<Input> {
             children: [
                 _inputBuilder(),
                 if (widget.customStickerBuilder != null)
-                    widget.customStickerBuilder!(),
+                    widget.customStickerBuilder!(_inputFocusNode),
             ],
         ),
       );

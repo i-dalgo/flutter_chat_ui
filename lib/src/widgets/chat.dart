@@ -149,7 +149,7 @@ class Chat extends StatefulWidget {
       customStatusBuilder;
 
   // [FORK-MODIFICATION] add a zone to display stickers / emojis / gifs.
-  final Widget Function()?
+  final Widget Function(FocusNode focusNode)?
       customStickerBuilder;
 
   /// Allows you to customize the date format. IMPORTANT: only for the date, do not return time here. See [timeFormat] to customize the time format. [dateLocale] will be ignored if you use this, so if you want a localized date make sure you initialize your [DateFormat] with a locale. See [customDateHeaderText] for more customization.
