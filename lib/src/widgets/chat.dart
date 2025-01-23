@@ -102,6 +102,7 @@ class Chat extends StatefulWidget {
     this.useTopSafeAreaInset,
     this.videoMessageBuilder,
     this.customEmojiButton,
+    this.messageReactionBuilder,
   });
 
   /// See [Message.audioMessageBuilder].
@@ -149,8 +150,11 @@ class Chat extends StatefulWidget {
       customStatusBuilder;
 
   // [FORK-MODIFICATION] add a zone to display stickers / emojis / gifs.
-  final Widget Function(FocusNode focusNode)?
-      customStickerBuilder;
+  final Widget Function(FocusNode focusNode)? customStickerBuilder;
+
+  /// [FORK-MODIFICATION] Allows you to customize the message reaction widget.
+  final Widget? Function(BuildContext context, types.Message message)?
+      messageReactionBuilder;
 
   /// Allows you to customize the date format. IMPORTANT: only for the date, do not return time here. See [timeFormat] to customize the time format. [dateLocale] will be ignored if you use this, so if you want a localized date make sure you initialize your [DateFormat] with a locale. See [customDateHeaderText] for more customization.
   final DateFormat? dateFormat;
@@ -261,7 +265,11 @@ class Chat extends StatefulWidget {
   final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
 
   /// [FORK-MODIFICATION]: See [Message.onMessageLongPress].
-  final void Function(BuildContext context, types.Message, BorderRadiusDirectional borderRadius, bool Function()? mounted)? onMessageLongPress;
+  final void Function(
+      BuildContext context,
+      types.Message,
+      BorderRadiusDirectional borderRadius,
+      bool Function()? mounted)? onMessageLongPress;
 
   /// See [Message.onMessageStatusLongPress].
   final void Function(BuildContext context, types.Message)?
@@ -474,6 +482,7 @@ class ChatState extends State<Chat> {
           imageMessageBuilder: widget.imageMessageBuilder,
           imageProviderBuilder: widget.imageProviderBuilder,
           message: message,
+          messageReactionBuilder: widget.messageReactionBuilder,
           messageWidth: messageWidth,
           nameBuilder: widget.nameBuilder,
           onAvatarTap: widget.onAvatarTap,
@@ -618,42 +627,44 @@ class ChatState extends State<Chat> {
                                     BoxConstraints constraints,
                                   ) =>
                                       Stack(
-                                        children: [
-                                          ChatList(
-                                            bottomWidget: widget.listBottomWidget,
-                                            bubbleRtlAlignment:
-                                                    widget.bubbleRtlAlignment!,
-                                            isLastPage: widget.isLastPage,
-                                            itemBuilder: (Object item, int? index) =>
-                                                    _messageBuilder(
-                                                  item,
-                                                  constraints,
-                                                  index,
-                                            ),
-                                            items: _chatMessages,
-                                            keyboardDismissBehavior:
-                                                    widget.keyboardDismissBehavior,
-                                            onEndReached: widget.onEndReached,
-                                            onEndReachedThreshold:
-                                                    widget.onEndReachedThreshold,
-                                            scrollController: _scrollController,
-                                            scrollPhysics: widget.scrollPhysics,
-                                            typingIndicatorOptions:
-                                                    widget.typingIndicatorOptions,
-                                            useTopSafeAreaInset:
-                                                    widget.useTopSafeAreaInset ?? isMobile,
-                                          ),
-                                          // [FORK-MODIFICATION].
-                                          if (widget.customFeedback != null) ...[
-                                            Positioned.fill(
-                                              child: Align(
-                                                alignment: Alignment.bottomCenter,
-                                                child: widget.customFeedback,
-                                              ),
-                                            ),
-                                          ],
-                                        ],
+                                    children: [
+                                      ChatList(
+                                        bottomWidget: widget.listBottomWidget,
+                                        bubbleRtlAlignment:
+                                            widget.bubbleRtlAlignment!,
+                                        isLastPage: widget.isLastPage,
+                                        itemBuilder:
+                                            (Object item, int? index) =>
+                                                _messageBuilder(
+                                          item,
+                                          constraints,
+                                          index,
+                                        ),
+                                        items: _chatMessages,
+                                        keyboardDismissBehavior:
+                                            widget.keyboardDismissBehavior,
+                                        onEndReached: widget.onEndReached,
+                                        onEndReachedThreshold:
+                                            widget.onEndReachedThreshold,
+                                        scrollController: _scrollController,
+                                        scrollPhysics: widget.scrollPhysics,
+                                        typingIndicatorOptions:
+                                            widget.typingIndicatorOptions,
+                                        useTopSafeAreaInset:
+                                            widget.useTopSafeAreaInset ??
+                                                isMobile,
                                       ),
+                                      // [FORK-MODIFICATION].
+                                      if (widget.customFeedback != null) ...[
+                                        Positioned.fill(
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: widget.customFeedback,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                 ),
                               ),
                       ),
